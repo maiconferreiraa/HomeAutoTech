@@ -1,365 +1,172 @@
-/* style.css */
+/* style.css - Home Automation Technology */
 
-/* CSS Reset e Configurações Globais */
 :root {
-    --primary-color: #007BFF; /* Azul vibrante */
+    --primary-color: #007BFF;
     --dark-color: #1a1a1a;
     --secondary-dark-color: #2c2c2c;
     --text-color: #f0f0f0;
     --gray-text-color: #a0a0a0;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    scroll-behavior: smooth;
-}
-
 body {
     font-family: 'Roboto', sans-serif;
     background-color: var(--dark-color);
     color: var(--text-color);
-    line-height: 1.6;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-h1, h2, h3 {
-    font-family: 'Poppins', sans-serif;
-    color: white;
-}
+h1, h2, h3 { font-family: 'Poppins', sans-serif; }
 
 h2 {
     font-size: 2.5rem;
-    text-align: center;
-    margin-bottom: 40px;
     position: relative;
+    margin-bottom: 60px;
 }
 
 h2::after {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 4px;
+    content: ''; display: block; width: 60px; height: 4px;
     background-color: var(--primary-color);
-    margin: 10px auto 0;
-    border-radius: 2px;
+    margin: 15px auto 0; border-radius: 2px;
 }
 
-section {
-    padding: 80px 0;
-}
+section { padding: 80px 0; }
 
-.btn {
-    display: inline-block;
-    background-color: var(--primary-color);
-    color: white;
-    padding: 12px 28px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-.btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-3px);
-}
-
-/* Header e Navegação */
 .header {
     background-color: rgba(26, 26, 26, 0.9);
-    padding: 15px 0;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
     backdrop-filter: blur(10px);
 }
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.navbar-brand { font-family: 'Poppins', sans-serif; font-weight: 700; }
+.navbar-brand span { color: var(--primary-color); }
+.navbar-dark .navbar-nav .nav-link:hover { color: var(--primary-color); }
+.logo-img {
+    height: 60px;
+    width: auto;
 }
 
-.logo {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: white;
-    text-decoration: none;
-}
-
-.logo span {
-    color: var(--primary-color);
-}
-
-.nav-links {
-    list-style: none;
-    display: flex;
-}
-
-.nav-links li {
-    margin-left: 30px;
-}
-
-.nav-links a {
-    color: var(--text-color);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-.nav-links a:hover {
-    color: var(--primary-color);
-}
-
-/* Seção Hero (Banner) */
 .hero {
     height: 100vh;
-    background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1604014237800-1c9102c219da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80');
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
+    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('images/12.png');
+    background-size: cover; background-position: center;
+}
+.hero h1 { font-size: 4rem; }
+.hero p { font-size: 1.5rem; font-weight: 300; }
+@media (max-width: 768px) {
+    .hero h1 { font-size: 2.5rem; }
+    .hero p { font-size: 1.2rem; }
+    .logo-img { height: 48px; }
 }
 
-.hero-content {
-    max-width: 800px;
-}
+#servicos, #depoimentos { background-color: var(--secondary-dark-color); }
 
-.hero-content h1 {
-    font-size: 4rem;
-    margin-bottom: 10px;
-}
-
-.hero-content p {
-    font-size: 1.5rem;
-    font-weight: 300;
-    margin-bottom: 30px;
-}
-
-/* Seção Serviços */
-#servicos {
-    background-color: var(--secondary-dark-color);
-}
-.servicos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    margin-top: 50px;
-}
-
-.servico-card {
+.servico-card, .product-card {
     background-color: var(--dark-color);
-    padding: 40px 30px;
-    text-align: center;
-    border-radius: 10px;
+    padding: 40px 30px; border-radius: 10px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
 }
+.product-card { padding: 25px; }
 
-.servico-card:hover {
+.servico-card:hover, .product-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 10px 20px rgba(0, 123, 255, 0.1);
 }
+.servico-card .icon { font-size: 3rem; color: var(--primary-color); }
+.product-card img {
+    width: 100%; border-radius: 8px;
+    aspect-ratio: 4 / 3; object-fit: cover;
+}
 
-.servico-card .icon {
-    font-size: 3rem;
+/* Setas do Swiper ocultas por padrão, visíveis apenas dentro dos carrosséis */
+.swiper-button-next,
+.swiper-button-prev {
+    display: none !important;
+}
+
+.swiper.product-swiper .swiper-button-next,
+.swiper.product-swiper .swiper-button-prev,
+.swiper.portfolio-swiper .swiper-button-next,
+.swiper.portfolio-swiper .swiper-button-prev {
+    display: flex !important;
     color: var(--primary-color);
-    margin-bottom: 20px;
+    z-index: 10;
 }
 
-.servico-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
+.swiper {
+    width: 100%;
+    padding: 20px 0 60px 0;
+    position: relative;
 }
 
-.servico-card p {
-    color: var(--gray-text-color);
-}
-
-/* Seção Portfólio */
-.portfolio-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
-}
+.swiper-pagination-bullet-active { background-color: var(--primary-color); }
 
 .projeto-card {
-    position: relative;
-    overflow: hidden;
-    border-radius: 10px;
-    cursor: pointer;
+    position: relative; overflow: hidden; border-radius: 10px;
+    cursor: pointer; height: 100%;
 }
-
-.projeto-card img {
-    width: 100%;
-    display: block;
+.projeto-card video {
+    width: 100%; height: 100%; object-fit: cover;
     transition: transform 0.4s ease;
 }
-
-.projeto-card:hover img {
-    transform: scale(1.1);
-}
-
+.projeto-card:hover video { transform: scale(1.1); }
 .projeto-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    position: absolute; bottom: 0; left: 0; right: 0;
     background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-    color: white;
     padding: 40px 20px 20px;
-    transform: translateY(100%);
-    transition: transform 0.4s ease;
+    transform: translateY(100%); transition: transform 0.4s ease;
 }
+.projeto-card:hover .projeto-overlay { transform: translateY(0); }
 
-.projeto-card:hover .projeto-overlay {
-    transform: translateY(0);
-}
-
-.projeto-overlay h3 {
-    margin: 0;
-}
-
-.projeto-overlay p {
-    margin: 5px 0 0;
-    font-size: 0.9rem;
-    color: var(--gray-text-color);
-}
-
-/* Seção Depoimentos */
- #depoimentos {
-    background-color: var(--secondary-dark-color);
-}
-
-.testimonial-slider {
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    height: 250px;
-}
-
-.testimonial {
-    position: absolute;
-    width: 100%;
+.testimonial-card {
+    background-color: var(--dark-color);
+    padding: 40px;
+    border-radius: 10px;
     height: 100%;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
-
-.testimonial.active {
-    opacity: 1;
-}
-
-.testimonial p {
+.testimonial-card p {
     font-size: 1.2rem;
     font-style: italic;
     color: var(--gray-text-color);
     margin-bottom: 20px;
 }
-
-.testimonial .author {
-    font-weight: bold;
-    color: white;
+.testimonial-card .author {
+    font-weight: 700;
+    color: #fff;
+}
+.testimonial-swiper .swiper-pagination-bullet-active {
+    background-color: var(--primary-color);
 }
 
-/* Seção Contato */
-.contato-wrapper {
-    display: flex;
-    gap: 50px;
-    flex-wrap: wrap;
-}
-
-.contato-info, .contato-form {
-    flex: 1;
-    min-width: 300px;
-}
-
-.contato-info h3 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-}
-
-.contato-info p {
-    margin-bottom: 20px;
-    color: var(--gray-text-color);
-    display: flex;
-    align-items: center;
-}
-
-.contato-info i {
-    font-size: 1.5rem;
-    color: var(--primary-color);
-    margin-right: 15px;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group input, .form-group textarea {
-    width: 100%;
-    padding: 15px;
-    border-radius: 5px;
-    border: 1px solid #444;
+.form-control {
     background-color: var(--secondary-dark-color);
     color: var(--text-color);
-    font-size: 1rem;
+    border: 1px solid #444;
+    padding: 15px;
 }
-
-.form-group input:focus, .form-group textarea:focus {
-    outline: none;
+.form-control:focus {
+    background-color: var(--secondary-dark-color);
+    color: var(--text-color);
     border-color: var(--primary-color);
+    box-shadow: none;
+}
+.form-control::placeholder {
+    color: var(--gray-text-color);
 }
 
-/* Footer */
 .footer {
     background-color: #111;
     color: var(--gray-text-color);
     text-align: center;
     padding: 40px 0;
 }
-
 .footer .logo {
+    font-family: 'Poppins', sans-serif;
     font-size: 1.8rem;
+    font-weight: 700;
+    color: white;
     margin-bottom: 10px;
     display: inline-block;
 }
-
-.footer p {
-    font-size: 0.9rem;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    .nav-links {
-        display: none; /* Simplificando para o exemplo. Um menu hamburguer seria ideal aqui. */
-    }
-    .hero-content h1 {
-        font-size: 2.5rem;
-    }
-    .hero-content p {
-        font-size: 1.2rem;
-    }
-    h2 {
-        font-size: 2rem;
-    }
-    .contato-wrapper {
-        flex-direction: column;
-    }
-}
+.footer .logo span { color: var(--primary-color); }
+.footer p { font-size: 0.9rem; }
