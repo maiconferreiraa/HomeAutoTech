@@ -60,6 +60,7 @@
     <noscript><style>#intro-overlay{display:none}</style></noscript>
     <div id="intro-overlay" aria-hidden="true">
         <img src="images/logo-nav.png" alt="">
+        <div class="intro-progress"><span></span></div>
     </div>
     <script>
         (function () {
@@ -78,7 +79,7 @@
                 overlay.addEventListener('transitionend', function () {
                     overlay.classList.add('intro-skip');
                 }, { once: true });
-            }, 1100);
+            }, 4600);
         })();
     </script>
 
