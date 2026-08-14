@@ -14,6 +14,42 @@ body {
     color: var(--text-color);
 }
 
+/* Animação de boas-vindas (não bloqueia o carregamento da página) */
+#intro-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--dark-color);
+    background-image: radial-gradient(circle at center, rgba(0, 123, 255, 0.18), transparent 60%);
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+#intro-overlay img {
+    width: 220px;
+    max-width: 60vw;
+    height: auto;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+#intro-overlay.intro-in img {
+    opacity: 1;
+    transform: scale(1);
+}
+#intro-overlay.intro-out {
+    opacity: 0;
+    pointer-events: none;
+}
+#intro-overlay.intro-skip {
+    display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+    #intro-overlay { display: none; }
+}
+
 h1, h2, h3 { font-family: 'Poppins', sans-serif; }
 
 h2 {

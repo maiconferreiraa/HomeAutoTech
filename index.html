@@ -57,6 +57,31 @@
 </head>
 <body class="text-white">
 
+    <noscript><style>#intro-overlay{display:none}</style></noscript>
+    <div id="intro-overlay" aria-hidden="true">
+        <img src="images/logo-nav.png" alt="">
+    </div>
+    <script>
+        (function () {
+            var overlay = document.getElementById('intro-overlay');
+            var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reduceMotion || sessionStorage.getItem('hatIntroShown')) {
+                overlay.classList.add('intro-skip');
+                return;
+            }
+            sessionStorage.setItem('hatIntroShown', '1');
+            requestAnimationFrame(function () {
+                overlay.classList.add('intro-in');
+            });
+            setTimeout(function () {
+                overlay.classList.add('intro-out');
+                overlay.addEventListener('transitionend', function () {
+                    overlay.classList.add('intro-skip');
+                }, { once: true });
+            }, 1100);
+        })();
+    </script>
+
     <header class="header fixed-top">
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
