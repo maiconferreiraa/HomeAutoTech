@@ -61,9 +61,12 @@
             cinema: { luz: 0, portao: 0, camera: 1, clima: 1, cortina: 0, som: 1 },
             dormir: { luz: 0, portao: 0, camera: 1, clima: 1, cortina: 0, som: 0 }
         };
-        var portaoTimer;
+        var portaoTimer, hero = document.querySelector('.hero');
         function aplicar(btn, on) {
             var k = btn.getAttribute('data-disp');
+            // a sala da foto do fundo acompanha o painel
+            if (hero && k === 'luz') hero.classList.toggle('luz-off', !on);
+            if (hero && k === 'cortina') hero.classList.toggle('cortina-fechada', !on);
             btn.classList.toggle('on', !!on);
             btn.querySelector('.estado').textContent = estados[k][on ? 1 : 0];
             if (k === 'portao' && on) {

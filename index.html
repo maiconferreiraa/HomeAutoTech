@@ -234,7 +234,17 @@
     <main>
         <!-- HERO -->
         <section class="hero" id="home">
-            <div class="hero-bg" aria-hidden="true"></div>
+            <div class="hero-bg" aria-hidden="true">
+                <!-- a sala da foto reage ao painel: luzes clareiam/escurecem, cortina abre/fecha, TV fica acesa -->
+                <div class="cena-sala">
+                    <div class="cs-base"></div>
+                    <div class="cs-janela"></div>
+                    <div class="cs-tv"></div>
+                    <div class="cs-tv-luz"></div>
+                    <div class="cs-cortina"><span class="cs-pano cs-esq"></span><span class="cs-pano cs-dir"></span></div>
+                </div>
+                <div class="hero-veu"></div>
+            </div>
             <div class="hero-grid" aria-hidden="true"></div>
             <div class="container position-relative">
                 <div class="row align-items-center gy-5">
@@ -270,7 +280,7 @@
                                 <button type="button" class="disp" data-disp="portao"><i class="bi bi-door-closed-fill"></i><span>Portão</span><small class="estado">Fechado</small><span class="chave"></span></button>
                                 <button type="button" class="disp on" data-disp="camera"><i class="bi bi-camera-video-fill"></i><span>Câmeras</span><small class="estado">4 gravando</small><span class="chave"></span></button>
                                 <button type="button" class="disp on" data-disp="clima"><i class="bi bi-thermometer-half"></i><span>Clima</span><small class="estado">23 °C</small><span class="chave"></span></button>
-                                <button type="button" class="disp" data-disp="cortina"><i class="bi bi-window"></i><span>Cortinas</span><small class="estado">Fechadas</small><span class="chave"></span></button>
+                                <button type="button" class="disp on" data-disp="cortina"><i class="bi bi-window"></i><span>Cortinas</span><small class="estado">Abertas</small><span class="chave"></span></button>
                                 <button type="button" class="disp on" data-disp="som"><i class="bi bi-music-note-beamed"></i><span>Som ambiente</span><small class="estado">Tocando</small><span class="chave"></span></button>
                             </div>
                             <div class="painel-rodape"><i class="bi bi-hand-index"></i> Toque para testar</div>

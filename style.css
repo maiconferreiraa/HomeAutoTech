@@ -238,10 +238,40 @@ section { padding: 96px 0; position: relative; }
 
 /* HERO */
 .hero { min-height: 100vh; display: flex; align-items: center; padding: 130px 0 90px; overflow: hidden; }
-.hero-bg { position: absolute; inset: 0; background:
-    linear-gradient(90deg, rgba(5,8,15,.97) 0%, rgba(5,8,15,.86) 45%, rgba(5,8,15,.55) 100%),
-    linear-gradient(0deg, var(--fundo) 0%, transparent 30%),
-    url('images/hero-sala.jpg') center/cover no-repeat; }
+.hero-bg { position: absolute; inset: 0; overflow: hidden; container-type: size; background: var(--fundo); }
+.hero-veu { position: absolute; inset: 0; background:
+    linear-gradient(90deg, rgba(5,8,15,.95) 0%, rgba(5,8,15,.78) 36%, rgba(5,8,15,.18) 62%, rgba(5,8,15,.05) 100%),
+    linear-gradient(0deg, var(--fundo) 0%, transparent 28%); }
+
+/* ---- sala viva (2026-11-25): mesma foto do fundo, em camadas ----
+   .cena-sala é um quadrado que "cobre" o topo (como background-size: cover),
+   então as posições em % batem com a foto (952x952). */
+.cena-sala { position: absolute; left: 50%; top: 50%; width: max(100cqw, 100cqh); height: max(100cqw, 100cqh); transform: translate(-50%, -50%); }
+.cena-sala > div { position: absolute; inset: 0; background: url('images/hero-sala.jpg') center/100% 100% no-repeat; }
+.cs-base { transition: filter 1.4s ease; }
+.cs-janela { clip-path: polygon(57.35% 32.77%, 100% 25%, 100% 65.97%, 57.35% 69.54%); transition: filter 1.4s ease; }
+.cs-tv { clip-path: polygon(9.45% 34.98%, 41.81% 39.6%, 41.81% 57.35%, 9.45% 57.88%); }
+.cena-sala > .cs-tv-luz { background: radial-gradient(ellipse 34% 30% at 26% 47%, rgba(150,200,255,.55), rgba(90,150,255,.18) 45%, transparent 75%);
+    mix-blend-mode: screen; opacity: 0; transition: opacity 1.4s ease; }
+.cena-sala > .cs-cortina { background: none; left: 57.35%; top: 25%; width: 42.65%; height: 44.54%; right: auto; bottom: auto;
+    clip-path: polygon(0% 17.45%, 100% 0%, 100% 91.98%, 0% 100%); transition: filter 1.4s ease; }
+.cs-pano { position: absolute; top: 0; bottom: 0; width: 0; transition: width 1.8s cubic-bezier(.45,.05,.25,1);
+    background:
+        linear-gradient(180deg, rgba(0,0,0,.35), transparent 12%, transparent 85%, rgba(0,0,0,.3)),
+        linear-gradient(90deg, #4f4740, #857a70 30%, #a0958a 48%, #7a7067 70%, #4f4740);
+    background-size: 100% 100%, 8% 100%;
+    box-shadow: 0 0 30px rgba(0,0,0,.45); }
+.cs-esq { left: 0; }
+.cs-dir { right: 0; }
+.hero.cortina-fechada .cs-pano { width: 51%; }
+
+/* luzes apagadas: a sala escurece, a cidade lá fora segue acesa e a TV ilumina */
+.hero.luz-off .cs-base { filter: brightness(.28) saturate(.8); }
+.hero.luz-off .cs-janela { filter: brightness(.8); }
+.hero.luz-off .cs-cortina { filter: brightness(.35); }
+.hero.luz-off .cs-tv-luz { opacity: .55; }
+@media (prefers-reduced-motion: reduce) { .cs-base, .cs-janela, .cs-cortina, .cs-pano, .cs-tv-luz { transition: none; } }
+
 .hero-grid { position: absolute; inset: 0;
     background-image: linear-gradient(rgba(34,211,238,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,.07) 1px, transparent 1px);
     background-size: 54px 54px;
@@ -258,16 +288,25 @@ section { padding: 96px 0; position: relative; }
 .hero-provas i { color: var(--ciano); margin-right: 4px; }
 .hero-seta { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); color: var(--suave); font-size: 1.4rem; animation: seta 2s ease-in-out infinite; }
 @keyframes seta { 50% { transform: translate(-50%, 6px); } }
-@media (max-width: 991px) { .hero { padding-top: 110px; } .hero-bg { background:
-    linear-gradient(180deg, rgba(5,8,15,.82) 0%, rgba(5,8,15,.94) 60%, var(--fundo) 100%), url('images/hero-sala.jpg') center/cover no-repeat; } .hero-seta { display: none; } }
+@media (max-width: 991px) {
+    .hero { padding-top: 110px; } .hero-seta { display: none; }
+    /* celular: a sala fica atrás do painel, mostrando a janela */
+    .cena-sala { width: 230cqw; height: 230cqw; top: auto; bottom: 0; transform: translateX(-72%);
+        -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 22%); mask-image: linear-gradient(180deg, transparent 0%, #000 22%); }
+    .hero-veu { background: linear-gradient(180deg, rgba(5,8,15,.55) 0%, rgba(5,8,15,.45) 45%, rgba(5,8,15,.12) 70%, rgba(5,8,15,.15) 94%, var(--fundo) 100%); }
+}
 @media (max-width: 576px) { .hero-ctas .btn { width: 100%; } }
 
 /* painel "app" */
 .painel-app { max-width: 460px; margin-left: auto; padding: 20px; border-radius: 26px;
-    background: linear-gradient(160deg, rgba(20,34,58,.78), rgba(8,14,26,.85)); border: 1px solid rgba(34,211,238,.22);
+    background: linear-gradient(160deg, rgba(20,34,58,.38), rgba(8,14,26,.5)); border: 1px solid rgba(34,211,238,.25);
     box-shadow: 0 30px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.03) inset, 0 0 60px rgba(34,211,238,.10);
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
 @media (max-width: 991px) { .painel-app { margin: 0 auto; } }
+.painel-topo b, .painel-topo small, .painel-rodape { text-shadow: 0 1px 6px rgba(0,0,0,.6); }
+.disp { background: rgba(5,10,20,.45); }
+.disp.on { background: rgba(10,40,60,.5); }
+.disp span:not(.chave), .disp .estado, .cena { text-shadow: 0 1px 5px rgba(0,0,0,.75); }
 .painel-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 .painel-topo small { display: block; color: var(--suave); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
 .painel-topo b { font-family: 'Poppins', sans-serif; font-size: 1.12rem; }
