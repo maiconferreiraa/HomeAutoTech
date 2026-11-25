@@ -253,14 +253,16 @@ section { padding: 96px 0; position: relative; }
 .cs-tv { clip-path: polygon(9.45% 34.98%, 41.81% 39.6%, 41.81% 57.35%, 9.45% 57.88%); }
 .cena-sala > .cs-tv-luz { background: radial-gradient(ellipse 34% 30% at 26% 47%, rgba(150,200,255,.55), rgba(90,150,255,.18) 45%, transparent 75%);
     mix-blend-mode: screen; opacity: 0; transition: opacity 1.4s ease; }
-.cena-sala > .cs-cortina { background: none; left: 57.35%; top: 25%; width: 42.65%; height: 44.54%; right: auto; bottom: auto;
-    clip-path: polygon(0% 17.45%, 100% 0%, 100% 91.98%, 0% 100%); transition: filter 1.4s ease; }
+.cena-sala > .cs-cortina { background: none; left: 57.35%; top: 25%; width: 42.65%; height: 47.5%; right: auto; bottom: auto;
+    clip-path: polygon(0% 16.36%, 100% 0%, 100% 90%, 0% 100%); transition: filter 1.4s ease; }
 .cs-pano { position: absolute; top: 0; bottom: 0; width: 0; transition: width 1.8s cubic-bezier(.45,.05,.25,1);
-    background:
-        linear-gradient(180deg, rgba(0,0,0,.35), transparent 12%, transparent 85%, rgba(0,0,0,.3)),
-        linear-gradient(90deg, #4f4740, #857a70 30%, #a0958a 48%, #7a7067 70%, #4f4740);
-    background-size: 100% 100%, 8% 100%;
-    box-shadow: 0 0 30px rgba(0,0,0,.45); }
+    /* mesmo tecido da cortina cinza da foto (recortado da própria imagem) */
+    background: url('images/cortina-tecido.jpg') repeat-x left top / auto 100%;
+    box-shadow: 0 0 24px rgba(0,0,0,.35); }
+.cs-pano::after { content: ''; position: absolute; top: 0; bottom: 0; width: 14px; }
+.cs-esq::after { right: 0; background: linear-gradient(90deg, transparent, rgba(0,0,0,.35)); }
+.cs-dir::after { left: 0; background: linear-gradient(270deg, transparent, rgba(0,0,0,.35)); }
+.cs-dir { background-position: right top; }
 .cs-esq { left: 0; }
 .cs-dir { right: 0; }
 .hero.cortina-fechada .cs-pano { width: 51%; }
