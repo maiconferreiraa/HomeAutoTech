@@ -257,8 +257,9 @@ section { padding: 96px 0; position: relative; }
 .cs-tv { clip-path: polygon(9.45% 34.98%, 41.81% 39.6%, 41.81% 57.35%, 9.45% 57.88%); }
 .cena-sala > .cs-tv-luz { background: radial-gradient(ellipse 34% 30% at 26% 47%, rgba(150,200,255,.55), rgba(90,150,255,.18) 45%, transparent 75%);
     mix-blend-mode: screen; opacity: 0; transition: opacity 1.4s ease; }
-.cena-sala > .cs-cortina { background: none; left: 57.35%; top: 25%; width: 42.65%; height: 47.5%; right: auto; bottom: auto;
-    clip-path: polygon(0% 16.36%, 100% 0%, 100% 90%, 0% 100%); filter: brightness(1.15) saturate(1.04); transition: filter 1.4s ease; }
+.cena-sala > .cs-cortina { background: none; left: 57.35%; top: 25%; width: 42.65%; height: 49%; right: auto; bottom: auto;
+    /* desce até o chão; o recorte de baixo contorna vaso, braço do sofá e almofadas (ficam na frente) */
+    clip-path: polygon(0.00% 15.86%, 100.00% 0.00%, 100.00% 87.46%, 98.52% 86.17%, 97.78% 83.39%, 92.61% 83.17%, 89.66% 84.89%, 88.18% 85.74%, 82.27% 85.96%, 77.34% 86.17%, 74.88% 87.46%, 74.38% 89.17%, 64.53% 89.17%, 63.30% 90.46%, 63.30% 95.82%, 37.93% 93.89%, 13.55% 91.53%, 13.55% 87.89%, 10.84% 86.39%, 7.14% 86.82%, 4.93% 88.75%, 4.93% 90.89%, 0.00% 91.10%); filter: brightness(1.15) saturate(1.04); transition: filter 1.4s ease; }
 .cs-pano { position: absolute; top: 0; bottom: 0; width: 0; transition: width 1.8s cubic-bezier(.45,.05,.25,1);
     /* mesmo tecido da cortina cinza da foto (recortado da própria imagem) */
     /* largura do tecido na mesma escala da foto (108px de 952) → pregas do mesmo tamanho;
