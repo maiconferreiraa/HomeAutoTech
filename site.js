@@ -275,7 +275,7 @@
             var fala = onda.querySelector('.voz-fala'), rec = null, ouvindo = false, sumir;
             function mostrar(titulo, texto, estado) {
                 clearTimeout(sumir);
-                onda.className = 'ativo' + (estado ? ' ' + estado : '');
+                onda.className = 'ativo' + (estado ? ' ' + estado : '') + (ouvindo ? ' ouve' : '');
                 fala.innerHTML = '';
                 if (titulo) { var sm = document.createElement('small'); sm.textContent = titulo; fala.appendChild(sm); }
                 if (texto) fala.appendChild(document.createTextNode(texto));
@@ -329,7 +329,39 @@
                     if (b) aplicar(b, cmd.on === null ? !b.classList.contains('on') : cmd.on);
                 });
             }
-            function parar() { ouvindo = false; vozBtn.classList.remove('ouvindo'); }
+            // ---- nível da voz: a onda sobe conforme a pessoa fala ----
+            // No computador lê o volume real do microfone; no celular (onde o microfone não pode
+            // ser aberto duas vezes) a onda pulsa a cada pedaço de frase reconhecido.
+            var celular = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            var nivel = 0, alvoNivel = 0, medidor = null, quadro = 0;
+            function animarNivel() {
+                if (medidor) {
+                    medidor.an.getByteTimeDomainData(medidor.buf);
+                    var soma = 0;
+                    for (var i = 0; i < medidor.buf.length; i++) { var x = (medidor.buf[i] - 128) / 128; soma += x * x; }
+                    alvoNivel = Math.min(1, Math.sqrt(soma / medidor.buf.length) * 6);
+                } else alvoNivel *= .93;               // celular: o pulso vai baixando
+                nivel += (alvoNivel - nivel) * (alvoNivel > nivel ? .45 : .12);   // sobe rápido, desce suave
+                onda.style.setProperty('--nivel', nivel.toFixed(3));
+                quadro = requestAnimationFrame(animarNivel);
+            }
+            function ligarMedidor() {
+                cancelAnimationFrame(quadro); nivel = alvoNivel = 0;
+                onda.classList.add('ouve'); quadro = requestAnimationFrame(animarNivel);
+                if (celular || !audio || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+                navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(function (st) {
+                    if (!ouvindo) { st.getTracks().forEach(function (t) { t.stop(); }); return; }
+                    var an = audio.createAnalyser(); an.fftSize = 512;
+                    var src = audio.createMediaStreamSource(st); src.connect(an);
+                    medidor = { st: st, src: src, an: an, buf: new Uint8Array(an.fftSize) };
+                }).catch(function () {});
+            }
+            function desligarMedidor() {
+                if (medidor) { try { medidor.src.disconnect(); } catch (e) {} medidor.st.getTracks().forEach(function (t) { t.stop(); }); medidor = null; }
+                alvoNivel = 0;
+                setTimeout(function () { if (!ouvindo) { cancelAnimationFrame(quadro); onda.style.setProperty('--nivel', 0); } }, 700);
+            }
+            function parar() { ouvindo = false; vozBtn.classList.remove('ouvindo'); desligarMedidor(); }
             vozBtn.addEventListener('click', function (ev) {
                 ev.stopPropagation();
                 desbloquearAudio();
@@ -339,8 +371,10 @@
                 rec.lang = 'pt-BR'; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 3;
                 var entendeu = false;
                 rec.onstart = function () { ouvindo = true; vozBtn.classList.add('ouvindo'); mostrar('Ouvindo…', 'Ex.: "apaga a luz" ou "modo cinema"'); };
+                rec.onspeechstart = function () { if (!medidor) alvoNivel = .7; };
                 rec.onresult = function (e) {
                     var r = e.results[e.results.length - 1];
+                    if (!medidor) alvoNivel = .55 + Math.random() * .45;
                     mostrar('Ouvindo…', '“' + r[0].transcript + '”', 'pensando');
                     if (!r.isFinal) return;
                     entendeu = true; parar();
@@ -358,6 +392,7 @@
                 rec.onend = function () { parar(); if (!entendeu) esconder(300); };
                 ouvindo = true; vozBtn.classList.add('ouvindo');
                 mostrar('Ouvindo…', 'Fale um comando (se o navegador pedir, permita o microfone)');   // resposta imediata ao toque
+                ligarMedidor();
                 try { rec.start(); } catch (err) { parar(); esconder(); }
             });
             if (window.speechSynthesis) speechSynthesis.getVoices();   // carrega a lista de vozes
