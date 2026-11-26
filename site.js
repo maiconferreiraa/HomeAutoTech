@@ -494,6 +494,7 @@
         var aviso = document.getElementById('simAviso');
         var nome = document.getElementById('simNome');
         var local = document.getElementById('simLocal');
+        var prazoEl = document.getElementById('simPrazo');
         var ROTULO = { imovel: 'Imóvel', ambientes: 'Tamanho', prazo: 'Prazo' };
 
         function marcados(grupo) {
@@ -502,7 +503,7 @@
         function esc(t) { var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
 
         function atualizar() {
-            var imovel = marcados('imovel')[0], itens = marcados('itens'), amb = marcados('ambientes')[0], prazo = marcados('prazo')[0];
+            var imovel = marcados('imovel')[0], itens = marcados('itens'), amb = marcados('ambientes')[0], prazo = prazoEl.value.trim();
             var html = '';
             if (imovel) html += '<li><b>Imóvel</b> ' + esc(imovel) + '</li>';
             itens.forEach(function (i) { html += '<li><i class="bi bi-check2"></i> ' + esc(i) + '</li>'; });
@@ -510,8 +511,8 @@
             if (prazo) html += '<li><b>Prazo</b> ' + esc(prazo) + '</li>';
             lista.innerHTML = html;
 
-            var pontos = (imovel ? 1 : 0) + (itens.length ? 1 : 0) + (amb ? 1 : 0) + (prazo ? 1 : 0);
-            barra.style.width = (pontos * 25) + '%';
+            var pontos = (imovel ? 1 : 0) + (itens.length ? 1 : 0) + (amb ? 1 : 0);
+            barra.style.width = Math.round(pontos * 100 / 3) + '%';
             nivel.textContent = !pontos ? 'Comece marcando o tipo de imóvel.'
                 : itens.length >= 6 ? 'Casa completa: ' + itens.length + ' soluções integradas num só app.'
                 : itens.length >= 3 ? itens.length + ' soluções: já é uma casa inteligente de verdade.'
@@ -548,8 +549,16 @@
                 });
             });
         });
+        // descrição do item (no celular aparece na linha abaixo da grade)
+        var dica = document.getElementById('simDica');
+        if (dica) sim.querySelectorAll('.sim-op[data-dica]').forEach(function (b) {
+            function mostrarDica() { dica.querySelector('span').innerHTML = '<b>' + esc(b.textContent.trim()) + ':</b> ' + esc(b.getAttribute('data-dica')); }
+            b.addEventListener('click', mostrarDica);
+            b.addEventListener('focus', mostrarDica);
+        });
         nome.addEventListener('input', atualizar);
         local.addEventListener('input', atualizar);
+        prazoEl.addEventListener('input', atualizar);
         btn.addEventListener('click', function (e) {
             if (btn.classList.contains('off')) {
                 e.preventDefault(); e.stopImmediatePropagation();
