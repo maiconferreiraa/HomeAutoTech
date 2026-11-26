@@ -129,20 +129,14 @@
         <div class="intro-scan"></div>
         <div class="intro-stage">
             <svg class="intro-casa" viewBox="0 0 400 250" role="presentation">
-                <defs>
-                    <filter id="introGlowF" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="2.4" result="b"/>
-                        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-                    </filter>
-                </defs>
-                <g class="i-trilhas" filter="url(#introGlowF)">
+                <g class="i-trilhas">
                     <path class="i-trilha t1" pathLength="1" d="M132,138 H86 V62 H58"/>
                     <path class="i-trilha t2" pathLength="1" d="M132,196 H58"/>
                     <path class="i-trilha t3" pathLength="1" d="M268,138 H314 V62 H342"/>
                     <path class="i-trilha t4" pathLength="1" d="M268,196 H342"/>
                     <path class="i-trilha t5" pathLength="1" d="M200,52 V40"/>
                 </g>
-                <g class="i-casa-linhas" filter="url(#introGlowF)">
+                <g class="i-casa-linhas">
                     <path class="i-linha i-chao" pathLength="1" d="M70,214 H330"/>
                     <path class="i-linha" pathLength="1" d="M132,214 V122 M268,122 V214"/>
                     <path class="i-linha i-telhado" pathLength="1" d="M108,124 L200,52 L292,124"/>
@@ -191,22 +185,40 @@
             overlay.addEventListener('click', sair);
             document.addEventListener('keydown', function (e) { if (e.key === 'Escape') sair(); }, { once: true });
 
-            requestAnimationFrame(function () { overlay.classList.add('intro-in'); });
+            // brilho neon: cópias dos traços por baixo (bem mais leve que filtro de blur)
+            overlay.querySelectorAll('.i-trilhas, .i-casa-linhas').forEach(function (g) {
+                var c = g.cloneNode(true); c.setAttribute('class', g.getAttribute('class') + ' i-glow');
+                g.parentNode.insertBefore(c, g);
+            });
 
-            // contador do "sistema" acompanhando a barra (0,6 s → 2,1 s)
+            // só começa quando fontes e logo estiverem prontas (máx. 700 ms) —
+            // animar enquanto a página ainda carrega é o que dava a travadinha no início
             var pct = overlay.querySelector('.intro-pct'), sis = overlay.querySelector('.intro-sistema'), t0 = null;
             function contar(t) {
                 if (fim) return;
                 if (t0 === null) t0 = t;
                 var p = Math.max(0, Math.min(1, (t - t0 - 600) / 1500));
-                pct.textContent = Math.round(p * 100) + '%';
+                var txt = Math.round(p * 100) + '%';
+                if (pct.textContent !== txt) pct.textContent = txt;
                 if (p < 1) requestAnimationFrame(contar);
                 else sis.innerHTML = 'Sistema <b>online</b>';
             }
-            requestAnimationFrame(contar);
-
-            timers.push(setTimeout(function () { overlay.classList.add('intro-logo-on'); }, 2250));
-            timers.push(setTimeout(sair, 3900));
+            var comecou = false;
+            function comecar() {
+                if (comecou || fim) return; comecou = true;
+                requestAnimationFrame(function () { requestAnimationFrame(function () {
+                    overlay.classList.add('intro-in');
+                    requestAnimationFrame(contar);
+                    timers.push(setTimeout(function () { overlay.classList.add('intro-logo-on'); }, 2250));
+                    timers.push(setTimeout(sair, 3900));
+                }); });
+            }
+            var esperas = [];
+            if (document.fonts && document.fonts.ready) esperas.push(document.fonts.ready);
+            var logo = overlay.querySelector('.intro-logo');
+            if (logo && logo.decode) esperas.push(logo.decode().catch(function () {}));
+            Promise.all(esperas).then(comecar, comecar);
+            setTimeout(comecar, 700);
         })();
     </script>
 
@@ -415,9 +427,9 @@
                 </div>
                 <div class="swiper portfolio-swiper revela">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide"><div class="projeto-card"><video autoplay loop muted playsinline preload="metadata"><source src="images/1.mp4" type="video/mp4"></video><div class="projeto-overlay"><h3>Iluminação Inteligente</h3><p>Condomínio, Lagoa Santa</p></div></div></div>
-                        <div class="swiper-slide"><div class="projeto-card"><video autoplay loop muted playsinline preload="metadata"><source src="images/2.mp4" type="video/mp4"></video><div class="projeto-overlay"><h3>Piscina Automatizada</h3><p>Condomínio, Lagoa Santa</p></div></div></div>
-                        <div class="swiper-slide"><div class="projeto-card"><video autoplay loop muted playsinline preload="metadata"><source src="images/3.mp4" type="video/mp4"></video><div class="projeto-overlay"><h3>Persianas Automatizadas</h3><p>Condomínio, Lagoa Santa</p></div></div></div>
+                        <div class="swiper-slide"><div class="projeto-card"><video loop muted playsinline preload="none"><source src="images/1.mp4" type="video/mp4"></video><div class="projeto-overlay"><h3>Iluminação Inteligente</h3><p>Condomínio, Lagoa Santa</p></div></div></div>
+                        <div class="swiper-slide"><div class="projeto-card"><video loop muted playsinline preload="none"><source src="images/2.mp4" type="video/mp4"></video><div class="projeto-overlay"><h3>Piscina Automatizada</h3><p>Condomínio, Lagoa Santa</p></div></div></div>
+                        <div class="swiper-slide"><div class="projeto-card"><video loop muted playsinline preload="none"><source src="images/3.mp4" type="video/mp4"></video><div class="projeto-overlay"><h3>Persianas Automatizadas</h3><p>Condomínio, Lagoa Santa</p></div></div></div>
                     </div>
                     <div class="swiper-pagination portfolio-pagination"></div>
                     <div class="swiper-button-prev portfolio-prev"></div>

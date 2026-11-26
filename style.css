@@ -26,9 +26,9 @@ body {
     display: flex; align-items: center; justify-content: center;
     background: radial-gradient(ellipse at 50% 45%, #0b1a33 0%, var(--i-fundo) 62%);
     overflow: hidden; cursor: pointer;
-    transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1), filter .7s ease;
+    transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1);
 }
-#intro-overlay.intro-out { opacity: 0; transform: scale(1.06); filter: blur(6px); pointer-events: none; }
+#intro-overlay.intro-out { opacity: 0; transform: scale(1.06); pointer-events: none; }
 #intro-overlay.intro-skip { display: none; }
 
 .intro-grid {
@@ -41,25 +41,28 @@ body {
     transform-origin: 50% 100%;
     -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 75%);
             mask-image: linear-gradient(to top, #000 10%, transparent 75%);
-    opacity: 0;
+    opacity: 0; will-change: transform, opacity;
 }
 #intro-overlay.intro-in .intro-grid { animation: iGrid 4s linear forwards, iFade .8s ease forwards; }
-@keyframes iGrid { to { background-position: 0 92px; } }
+@keyframes iGrid { to { transform: perspective(520px) rotateX(58deg) translateY(calc(28% + 92px)); } }
 @keyframes iFade { to { opacity: 1; } }
 
 .intro-scan {
     position: absolute; left: 0; right: 0; height: 140px; top: -160px;
     background: linear-gradient(to bottom, transparent, rgba(34,211,238,.16) 70%, rgba(180,245,255,.55) 98%, transparent);
-    mix-blend-mode: screen; pointer-events: none;
+    mix-blend-mode: screen; pointer-events: none; will-change: transform;
 }
 #intro-overlay.intro-logo-on .intro-scan { animation: iScan 1s cubic-bezier(.4,0,.2,1) forwards; }
-@keyframes iScan { to { top: 110%; } }
+@keyframes iScan { to { transform: translateY(calc(110vh + 160px)); } }
 
 .intro-stage {
     position: relative; width: min(440px, 88vw);
     display: flex; flex-direction: column; align-items: center;
 }
-.intro-casa { width: 100%; height: auto; overflow: visible; transition: opacity .6s ease, transform .7s ease, filter .6s ease; }
+.intro-casa { width: 100%; height: auto; overflow: visible; transition: opacity .6s ease, transform .7s ease; }
+/* brilho neon barato: cópia mais grossa e translúcida dos traços (no lugar do feGaussianBlur, que travava) */
+.i-glow .i-linha, .i-glow .i-trilha { stroke-width: 7; opacity: .22; }
+.i-glow .i-telhado { stroke-width: 8; }
 
 /* traços que se desenham */
 .i-linha, .i-trilha { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
@@ -80,7 +83,7 @@ body {
 
 /* janelas acendem (luz ligada) */
 #intro-overlay.intro-in .i-janela { animation: iDraw .9s cubic-bezier(.6,.05,.3,1) .35s forwards, iLuz .5s ease 1.25s forwards; }
-@keyframes iLuz { to { fill: rgba(255,200,90,.85); stroke: #ffd27a; filter: drop-shadow(0 0 8px rgba(255,190,80,.9)); } }
+@keyframes iLuz { to { fill: rgba(255,200,90,.85); stroke: #ffd27a; } }
 
 /* dispositivos ligando */
 .i-no { opacity: 0; transform-box: fill-box; transform-origin: center; transform: scale(.4); }
@@ -101,7 +104,7 @@ body {
 #intro-overlay.intro-in .n4 circle:first-child, #intro-overlay.intro-in .n4 .i-ic { animation-delay: 1.85s; }
 #intro-overlay.intro-in .n5 circle:first-child, #intro-overlay.intro-in .n5 .i-ic { animation-delay: 2.05s; }
 #intro-overlay.intro-in .i-ic { animation: iIcOn .4s ease forwards; }
-@keyframes iNoOn { to { stroke: var(--i-ciano); fill: rgba(34,211,238,.12); filter: drop-shadow(0 0 10px rgba(34,211,238,.8)); } }
+@keyframes iNoOn { to { stroke: var(--i-ciano); fill: rgba(34,211,238,.14); stroke-width: 2.2; } }
 @keyframes iIcOn { to { stroke: #e9fbff; } }
 
 /* painel de status */
@@ -132,9 +135,9 @@ body {
 #intro-overlay.intro-in .intro-status .s4 { animation-delay: 2.05s; }
 @keyframes iChip { to { color: #dff9ff; border-color: rgba(34,211,238,.7); background: rgba(34,211,238,.12); box-shadow: 0 0 14px rgba(34,211,238,.25); } }
 .intro-barra { height: 2px; background: rgba(34,211,238,.12); border-radius: 2px; overflow: hidden; }
-.intro-barra span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--i-azul), var(--i-ciano)); box-shadow: 0 0 12px var(--i-ciano); }
+.intro-barra span { display: block; height: 100%; width: 100%; transform: scaleX(0); transform-origin: left center; will-change: transform; background: linear-gradient(90deg, var(--i-azul), var(--i-ciano)); box-shadow: 0 0 12px var(--i-ciano); }
 #intro-overlay.intro-in .intro-barra span { animation: iBarra 1.5s cubic-bezier(.5,0,.3,1) .6s forwards; }
-@keyframes iBarra { to { width: 100%; } }
+@keyframes iBarra { to { transform: scaleX(1); } }
 .intro-sistema {
     margin-top: 8px; text-align: center; color: rgba(160,200,220,.7);
     font: 500 11px/1 'Roboto', sans-serif; letter-spacing: .22em; text-transform: uppercase;
@@ -153,7 +156,7 @@ body {
     transform: translateY(70px); opacity: 0;
     font: 600 clamp(14px, 3.6vw, 17px)/1.3 'Poppins', sans-serif; letter-spacing: .02em; color: #e8f6ff;
 }
-#intro-overlay.intro-logo-on .intro-casa { opacity: 0; transform: scale(.8); filter: blur(4px); }
+#intro-overlay.intro-logo-on .intro-casa { opacity: 0; transform: scale(.8); }
 #intro-overlay.intro-logo-on .intro-painel { opacity: 0; transform: translateY(10px); }
 #intro-overlay.intro-logo-on .intro-logo { animation: iLogo .9s cubic-bezier(.2,.8,.2,1) .15s forwards; }
 #intro-overlay.intro-logo-on .intro-frase { animation: iFrase .6s ease .7s forwards; }
@@ -246,7 +249,7 @@ section { padding: 96px 0; position: relative; }
 /* ---- sala viva (2026-11-25): mesma foto do fundo, em camadas ----
    .cena-sala é um quadrado que "cobre" o topo (como background-size: cover),
    então as posições em % batem com a foto (952x952). */
-.cena-sala { position: absolute; left: 50%; top: 50%; width: max(100cqw, 100cqh); height: max(100cqw, 100cqh); transform: translate(-50%, -50%); }
+.cena-sala { --cena: max(100cqw, 100cqh); position: absolute; left: 50%; top: 50%; width: var(--cena); height: var(--cena); transform: translate(-50%, -50%); }
 .cena-sala > div { position: absolute; inset: 0; background: url('images/hero-sala.jpg') center/100% 100% no-repeat; }
 .cs-base { transition: filter 1.4s ease; }
 .cs-janela { clip-path: polygon(57.35% 32.77%, 100% 25%, 100% 65.97%, 57.35% 69.54%); transition: filter 1.4s ease; }
@@ -257,7 +260,10 @@ section { padding: 96px 0; position: relative; }
     clip-path: polygon(0% 16.36%, 100% 0%, 100% 90%, 0% 100%); transition: filter 1.4s ease; }
 .cs-pano { position: absolute; top: 0; bottom: 0; width: 0; transition: width 1.8s cubic-bezier(.45,.05,.25,1);
     /* mesmo tecido da cortina cinza da foto (recortado da própria imagem) */
-    background: url('images/cortina-tecido.jpg') repeat-x left top / auto 100%;
+    /* largura do tecido na mesma escala da foto (108px de 952) → pregas do mesmo tamanho;
+       filtro acerta o tom com a cortina real ao lado da janela (medido na foto: um pouco mais escura e mais quente) */
+    background: url('images/cortina-tecido.jpg') repeat-x left top / calc(var(--cena) * .11345) 100%;
+    filter: brightness(.88) saturate(1.5) hue-rotate(-18deg);
     box-shadow: 0 0 24px rgba(0,0,0,.35); }
 .cs-pano::after { content: ''; position: absolute; top: 0; bottom: 0; width: 14px; }
 .cs-esq::after { right: 0; background: linear-gradient(90deg, transparent, rgba(0,0,0,.35)); }
@@ -293,7 +299,7 @@ section { padding: 96px 0; position: relative; }
 @media (max-width: 991px) {
     .hero { padding-top: 110px; } .hero-seta { display: none; }
     /* celular: a sala fica atrás do painel, mostrando a janela */
-    .cena-sala { width: 230cqw; height: 230cqw; top: auto; bottom: 0; transform: translateX(-72%);
+    .cena-sala { --cena: 230cqw; top: auto; bottom: 0; transform: translateX(-72%);
         -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 22%); mask-image: linear-gradient(180deg, transparent 0%, #000 22%); }
     .hero-veu { background: linear-gradient(180deg, rgba(5,8,15,.55) 0%, rgba(5,8,15,.45) 45%, rgba(5,8,15,.12) 70%, rgba(5,8,15,.15) 94%, var(--fundo) 100%); }
 }

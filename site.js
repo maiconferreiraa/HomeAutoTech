@@ -92,6 +92,21 @@
         });
     }
 
+    // ---------- Vídeos dos projetos: só baixam/tocam quando aparecem na tela ----------
+    // (antes tocavam sozinhos desde o início e disputavam com a abertura → travadinha)
+    var videos = document.querySelectorAll('.portfolio-swiper video');
+    if ('IntersectionObserver' in window) {
+        var iov = new IntersectionObserver(function (entradas) {
+            entradas.forEach(function (e) {
+                var v = e.target;
+                if (e.isIntersecting) { v.play().catch(function () {}); } else { v.pause(); }
+            });
+        }, { rootMargin: '200px 0px', threshold: 0.2 });
+        videos.forEach(function (v) { iov.observe(v); });
+    } else {
+        videos.forEach(function (v) { v.preload = 'metadata'; v.play().catch(function () {}); });
+    }
+
     // ---------- Aparecer ao rolar ----------
     var revelar = document.querySelectorAll('.revela');
     if (!reduz && 'IntersectionObserver' in window) {
