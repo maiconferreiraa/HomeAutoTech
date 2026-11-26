@@ -259,6 +259,109 @@
                 });
             });
         });
+
+        // ---------- Comando de voz: o visitante fala e a casa obedece ----------
+        // Usa o reconhecimento de fala do próprio navegador (Chrome, Edge, Safari) em pt-BR
+        // e responde falando. Sem suporte (ex.: Firefox), o botão some.
+        var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        var vozBtn = painel.querySelector('.voz-btn'), onda = document.getElementById('voz-onda');
+        if (SR && vozBtn && !onda) {          // onda azul de "estou ouvindo" no rodapé da tela
+            onda = document.createElement('div'); onda.id = 'voz-onda'; onda.setAttribute('aria-live', 'polite');
+            onda.innerHTML = '<div class="voz-fala"></div><div class="voz-luz"></div>';
+            document.body.appendChild(onda);
+        }
+        if (!SR || !vozBtn || !onda) { painel.classList.add('sem-voz'); }
+        else {
+            var fala = onda.querySelector('.voz-fala'), rec = null, ouvindo = false, sumir;
+            function mostrar(titulo, texto, estado) {
+                clearTimeout(sumir);
+                onda.className = 'ativo' + (estado ? ' ' + estado : '');
+                fala.innerHTML = '';
+                if (titulo) { var sm = document.createElement('small'); sm.textContent = titulo; fala.appendChild(sm); }
+                if (texto) fala.appendChild(document.createTextNode(texto));
+            }
+            function esconder(depois) {
+                clearTimeout(sumir);
+                sumir = setTimeout(function () { onda.className = ''; fala.innerHTML = ''; }, depois || 0);
+            }
+            function responder(frase, fim) {
+                mostrar('', frase, 'falando');
+                var acabou = function () { esconder(600); if (fim) fim(); };
+                if (!window.speechSynthesis) { setTimeout(acabou, 1400); return; }
+                var u = new SpeechSynthesisUtterance(frase);
+                u.lang = 'pt-BR'; u.rate = 1.02; u.pitch = 1.05;
+                var vozes = speechSynthesis.getVoices().filter(function (v) { return /pt[-_]BR/i.test(v.lang); });
+                var fem = vozes.filter(function (v) { return /luciana|francisca|maria|female|feminina|google/i.test(v.name); });
+                if (fem.length || vozes.length) u.voice = (fem[0] || vozes[0]);
+                u.onend = acabou; u.onerror = acabou;
+                speechSynthesis.cancel(); speechSynthesis.speak(u);
+                setTimeout(acabou, 4000);     // garantia se o onend não vier
+            }
+            function semAcento(t) { return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+            var APARELHOS = {
+                luz: /\b(luz|luzes|lampada|lampadas|iluminacao|abajur)\b/,
+                cortina: /\b(cortina|cortinas|persiana|persianas|blackout)\b/,
+                portao: /\b(portao|garagem)\b/,
+                camera: /\b(camera|cameras|seguranca|alarme)\b/,
+                clima: /\b(clima|ar|ar condicionado|temperatura)\b/,
+                som: /\b(som|musica|musicas|jazz|caixa)\b/
+            };
+            function entender(texto) {
+                var t = semAcento(texto);
+                // cenas
+                if (/\b(cinema|filme)\b/.test(t)) return { cena: 'cinema' };
+                if (/\b(dormir|boa noite|vou deitar)\b/.test(t)) return { cena: 'dormir' };
+                if (/\b(cheguei|chegar em casa|chegando)\b/.test(t)) return { cena: 'chegar' };
+                // vale o verbo que aparece primeiro ("liga a luz para mim" = ligar)
+                var mDes = t.search(/(^para\b|\b(?:apaga|apague|apagar|desliga|desligue|desligar|fecha|feche|fechar|pare|parar|pausa|pause|pausar|desativa|desative|silencio)\b)/);
+                var mLig = t.search(/\b(acende|acenda|acender|liga|ligue|ligar|abre|abra|abrir|toca|toque|tocar|ativa|ative|ativar|coloca|coloque|bota)\b/);
+                var desligar = mDes >= 0 && (mLig < 0 || mDes < mLig), ligar = mLig >= 0 && !desligar;
+                var alvo = [];
+                Object.keys(APARELHOS).forEach(function (k) { if (APARELHOS[k].test(t)) alvo.push(k); });
+                if (!alvo.length) return null;
+                return { alvo: alvo, on: desligar ? 0 : (ligar ? 1 : null) };
+            }
+            function executar(cmd) {
+                if (cmd.cena) { var c = painel.querySelector('.cena[data-cena="' + cmd.cena + '"]'); if (c) c.click(); return; }
+                painel.querySelectorAll('.cena').forEach(function (c) { c.classList.remove('ativa'); });
+                cmd.alvo.forEach(function (k) {
+                    var b = painel.querySelector('.disp[data-disp="' + k + '"]');
+                    if (b) aplicar(b, cmd.on === null ? !b.classList.contains('on') : cmd.on);
+                });
+            }
+            function parar() { ouvindo = false; vozBtn.classList.remove('ouvindo'); }
+            vozBtn.addEventListener('click', function (ev) {
+                ev.stopPropagation();
+                desbloquearAudio();
+                if (window.speechSynthesis) { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance('')); }  // libera a fala (iPhone)
+                if (ouvindo && rec) { rec.abort(); parar(); esconder(); return; }
+                rec = new SR();
+                rec.lang = 'pt-BR'; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 3;
+                var entendeu = false;
+                rec.onstart = function () { ouvindo = true; vozBtn.classList.add('ouvindo'); mostrar('Ouvindo…', 'Ex.: "apaga a luz" ou "modo cinema"'); };
+                rec.onresult = function (e) {
+                    var r = e.results[e.results.length - 1];
+                    mostrar('Ouvindo…', '“' + r[0].transcript + '”', 'pensando');
+                    if (!r.isFinal) return;
+                    entendeu = true; parar();
+                    var cmd = null;
+                    for (var i = 0; i < r.length && !cmd; i++) cmd = entender(r[i].transcript);
+                    if (cmd) { executar(cmd); responder('Tudo bem'); }
+                    else responder('Desculpe, não entendi. Tente "apaga a luz" ou "fecha a cortina".');
+                };
+                rec.onerror = function (e) {
+                    parar(); entendeu = true;
+                    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { mostrar('Microfone', 'Libere o microfone para falar com a casa.'); esconder(3500); }
+                    else if (e.error === 'no-speech') { mostrar('', 'Não ouvi nada. Toque e fale de novo.'); esconder(2500); }
+                    else if (e.error !== 'aborted') { mostrar('', 'Não consegui ouvir agora. Tente de novo.'); esconder(2500); }
+                };
+                rec.onend = function () { parar(); if (!entendeu) esconder(300); };
+                ouvindo = true; vozBtn.classList.add('ouvindo');
+                mostrar('Ouvindo…', 'Fale um comando (se o navegador pedir, permita o microfone)');   // resposta imediata ao toque
+                try { rec.start(); } catch (err) { parar(); esconder(); }
+            });
+            if (window.speechSynthesis) speechSynthesis.getVoices();   // carrega a lista de vozes
+        }
     }
 
     // ---------- Vídeos dos projetos: só baixam/tocam quando aparecem na tela ----------

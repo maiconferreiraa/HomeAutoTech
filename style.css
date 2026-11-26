@@ -493,3 +493,31 @@ section { padding: 96px 0; position: relative; }
 .revela { opacity: 0; transform: translateY(26px); transition: opacity .7s ease var(--atraso, 0s), transform .7s cubic-bezier(.2,.7,.2,1) var(--atraso, 0s); }
 .revela.visivel { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .revela { opacity: 1; transform: none; transition: none; } .led, .hero-seta, .whatsapp-float { animation: none; } html { scroll-behavior: auto; } }
+
+/* ---- comando de voz (2026-11-26) ---- */
+.voz-btn { display: inline-flex; align-items: center; gap: 6px; margin-left: 4px; padding: 5px 12px; border-radius: 999px;
+    border: 1px solid rgba(34,211,238,.45); background: rgba(34,211,238,.1); color: #fff; font-size: .82rem; font-weight: 600;
+    cursor: pointer; transition: background .2s, box-shadow .2s; }
+.voz-btn i { color: var(--ciano); }
+.voz-btn:hover, .voz-btn.ouvindo { background: rgba(34,211,238,.22); box-shadow: 0 0 18px rgba(34,211,238,.35); }
+.voz-btn.ouvindo i { animation: notaDanca .5s ease-in-out infinite alternate; }
+.sem-voz .voz-btn, .sem-voz .voz-ou { display: none; }
+#voz-onda { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1200; pointer-events: none; opacity: 0;
+    transform: translateY(14px); transition: opacity .35s ease, transform .35s ease; }
+#voz-onda.ativo { opacity: 1; transform: none; }
+.voz-luz { position: relative; height: 7px; overflow: visible;
+    background: linear-gradient(90deg, #0b3dff, #22d3ee, #3b82f6, #22d3ee, #0b3dff); background-size: 200% 100%;
+    animation: vozCorre 1.6s linear infinite; box-shadow: 0 0 22px 6px rgba(34,160,255,.55), 0 0 60px 16px rgba(34,211,238,.25); }
+.voz-luz::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 90px;
+    background: radial-gradient(ellipse 60% 100% at 50% 100%, rgba(34,170,255,.35), transparent 70%);
+    animation: vozRespira 1.1s ease-in-out infinite alternate; }
+#voz-onda.falando .voz-luz { animation-duration: .7s; filter: brightness(1.3); }
+#voz-onda.pensando .voz-luz { animation-duration: .9s; }
+.voz-fala { margin: 0 auto 14px; width: max-content; max-width: 90vw; padding: 10px 18px; border-radius: 16px;
+    background: rgba(5,12,24,.88); border: 1px solid rgba(34,211,238,.35); color: #fff; font-size: 1rem; text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+.voz-fala:empty { display: none; }
+.voz-fala small { display: block; color: var(--ciano); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 2px; }
+@keyframes vozCorre { to { background-position: -200% 0; } }
+@keyframes vozRespira { from { opacity: .55; transform: scaleY(.7); } to { opacity: 1; transform: scaleY(1.15); } }
+@media (prefers-reduced-motion: reduce) { .voz-luz, .voz-luz::before { animation: none; } }
