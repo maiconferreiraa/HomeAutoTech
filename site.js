@@ -62,9 +62,9 @@
             dormir: { luz: 0, portao: 0, camera: 1, clima: 1, cortina: 0, som: 0 }
         };
         // ---------- Música do "Som ambiente" (gerada no navegador, sem arquivo) ----------
-        // "Jazz de detetive" ORIGINAL (composição própria do site): 120 BPM com swing, baixo
-        // andando, prato de condução, sopro abafado no tema e vibrafone improvisando na volta.
-        // Forma de 8 compassos em Dó menor: Cm7 Cm7 Fm7 Fm7 Ab7 G7 Cm7 G7(b9).
+        // "Na Gruta do Rei da Montanha" (Edvard Grieg, Peer Gynt, 1875 — DOMÍNIO PÚBLICO).
+        // Arranjo próprio, sintetizado aqui (nenhuma gravação de terceiros): começa baixinho no
+        // pizzicato grave, os sopros entram, vai acelerando e crescendo até o tutti, e recomeça.
         // Toca em loop enquanto o "Som ambiente" estiver ligado.
         var Ctx = window.AudioContext || window.webkitAudioContext, audio = null, musica = null, ruido = null;
         function desbloquearAudio() {           // precisa acontecer dentro do toque/clique (iPhone)
@@ -73,30 +73,28 @@
             if (audio.state === 'suspended') audio.resume();
         }
         function hz(n) { return 440 * Math.pow(2, (n - 69) / 12); }   // nota MIDI → Hz
-        var BPM = 120, PASSO = 60 / BPM / 2, SWING = 1 / 3;           // colcheia com swing (longa-curta)
-        // acordes: fundamental do baixo, notas do acorde (comping) e escala para o vibrafone
-        var FORMA = [
-            { r: 36, ac: [58, 63, 67], esc: [60, 63, 65, 67, 70, 72, 75] },   // Cm7
-            { r: 36, ac: [58, 63, 67], esc: [60, 63, 65, 67, 70, 72, 75] },   // Cm7
-            { r: 41, ac: [56, 60, 63], esc: [65, 68, 70, 72, 75, 77] },       // Fm7
-            { r: 41, ac: [56, 60, 63], esc: [65, 68, 70, 72, 75, 77] },       // Fm7
-            { r: 44, ac: [54, 60, 63], esc: [63, 66, 68, 72, 75] },           // Ab7
-            { r: 43, ac: [53, 59, 62], esc: [62, 65, 67, 71, 74] },           // G7
-            { r: 36, ac: [58, 63, 67], esc: [60, 63, 67, 70, 72] },           // Cm7
-            { r: 43, ac: [53, 56, 59], esc: [59, 62, 65, 68, 71] }            // G7(b9)
+        var PASSO = 60 / 104 / 2;                                     // colcheia (muda: a música acelera)
+        var TOM = 59;                                                 // Si menor (tom original), Si3
+        // frases em colcheias: [nota relativa ao Si, duração em colcheias]
+        var FRASE_A = [   // tema na tônica
+            [[0,1],[2,1],[3,1],[5,1],[7,1],[3,1],[7,2]],
+            [[6,1],[2,1],[6,2],[5,1],[1,1],[5,2]],
+            [[0,1],[2,1],[3,1],[5,1],[7,1],[3,1],[7,1],[12,1]],
+            [[10,1],[7,1],[3,1],[7,1],[10,4]]
         ];
-        // tema: [compasso, colcheia (0–7), nota MIDI, duração em colcheias]
-        var TEMA = [
-            [0,2,67,1],[0,3,70,1],[0,4,72,2],[0,7,75,1],
-            [1,0,74,3],[1,4,72,1],[1,5,70,1],[1,6,67,2],
-            [2,1,68,1],[2,2,72,1],[2,3,75,1],[2,4,77,2],[2,6,75,1],[2,7,72,1],
-            [3,0,68,4],[3,6,67,1],[3,7,68,1],
-            [4,0,75,1],[4,1,72,1],[4,2,68,2],[4,4,66,1],[4,5,68,1],[4,6,72,2],
-            [5,0,71,2],[5,2,74,1],[5,3,77,2],[5,5,75,1],[5,6,74,1],[5,7,71,1],
-            [6,0,72,3],[6,4,67,1],[6,5,63,1],[6,6,60,2],
-            [7,2,59,1],[7,3,62,1],[7,4,65,1],[7,5,68,3]
+        var FRASE_B = [   // o mesmo tema na dominante
+            [[7,1],[9,1],[11,1],[12,1],[14,1],[11,1],[14,2]],
+            [[15,1],[11,1],[15,2],[14,1],[11,1],[14,2]],
+            [[7,1],[9,1],[11,1],[12,1],[14,1],[11,1],[14,1],[19,1]],
+            [[17,1],[14,1],[11,1],[14,1],[17,4]]
         ];
-
+        // 16 compassos por volta: A (grave) · A (sopros) · B · A (tutti)
+        function frase(c) { var f = c < 8 || c >= 12 ? FRASE_A : FRASE_B; return f[c % 4]; }
+        function notaNoPasso(c, p) {          // nota que começa na colcheia p do compasso c (ou null)
+            var pos = 0, f = frase(c);
+            for (var i = 0; i < f.length; i++) { if (pos === p) return f[i]; pos += f[i][1]; }
+            return null;
+        }
         function montar() {
             var m = { saida: audio.createGain(), passo: 0, compasso: 0, proximo: audio.currentTime + .1 };
             m.saida.gain.setValueAtTime(0.0001, audio.currentTime);
@@ -105,7 +103,7 @@
             var comp = audio.createDynamicsCompressor(); comp.threshold.value = -20; comp.ratio.value = 3;
             var vol = audio.createGain(); vol.gain.value = .5;
             m.saida.connect(quente); quente.connect(comp); comp.connect(vol); vol.connect(audio.destination);
-            // ambiência de clube: eco curto
+            // ambiência de sala de concerto: eco curto
             m.eco = audio.createDelay(); m.eco.delayTime.value = .19;
             var ret = audio.createGain(), molhado = audio.createGain(); ret.gain.value = .25; molhado.gain.value = .2;
             m.eco.connect(ret); ret.connect(m.eco); m.eco.connect(molhado); molhado.connect(m.saida);
@@ -154,15 +152,6 @@
             o1.connect(fil); o2.connect(fil); fil.connect(g); g.connect(m.saida); g.connect(m.eco);
             [o1, o2, lfo].forEach(function (o) { o.start(t); o.stop(t + dur + .15); });
         }
-        function vibra(m, nota, t) {                      // vibrafone (tremolo leve)
-            var f = hz(nota), o = audio.createOscillator(), o4 = audio.createOscillator();
-            var g = audio.createGain(), g4 = audio.createGain(), trem = audio.createOscillator(), tremG = audio.createGain();
-            o.frequency.value = f; o4.frequency.value = f * 4;
-            env(g, t, .09, .004, 1.6); env(g4, t, .018, .002, .25);
-            trem.frequency.value = 5; tremG.gain.value = .025; trem.connect(tremG); tremG.connect(g.gain);
-            o.connect(g); o4.connect(g4); g.connect(m.saida); g4.connect(m.saida); g.connect(m.eco);
-            [o, o4, trem].forEach(function (x) { x.start(t); x.stop(t + 1.8); });
-        }
         function ruidoCurto(m, t, tipo, freq, vol, dur) {
             var s = audio.createBufferSource(), f = audio.createBiquadFilter(), g = audio.createGain();
             s.buffer = ruido; f.type = tipo; f.frequency.value = freq; f.Q.value = tipo === 'bandpass' ? 1.2 : .7;
@@ -170,36 +159,49 @@
             s.connect(f); f.connect(g); g.connect(m.saida); s.start(t, Math.random() * .3); s.stop(t + dur + .05);
         }
 
+        function timpano(m, nota, t, vol) {               // tímpano: grave com a afinação caindo
+            var o = audio.createOscillator(), g = audio.createGain();
+            o.type = 'sine'; o.frequency.setValueAtTime(hz(nota) * 1.5, t); o.frequency.exponentialRampToValueAtTime(hz(nota), t + .06);
+            env(g, t, vol, .004, .55); o.connect(g); g.connect(m.saida); o.start(t); o.stop(t + .65);
+            ruidoCurto(m, t, 'lowpass', 400, vol * .4, .08);
+        }
         function tocarPasso(m, p, t) {                    // p = colcheia 0–7 do compasso
-            var c = m.compasso % 8, volta = Math.floor(m.compasso / 8), a = FORMA[c], prox = FORMA[(c + 1) % 8];
-            // bateria: condução no prato (1, 2, 2e, 3, 4, 4e) + "chick" do chimbal no 2 e no 4
-            if ([0, 2, 3, 4, 6, 7].indexOf(p) >= 0) ruidoCurto(m, t, 'highpass', 8000, p % 2 ? .025 : .045, .22);
-            if (p === 2 || p === 6) ruidoCurto(m, t, 'bandpass', 3200, .035, .05);
-            if (p === 6 && Math.random() < .3) ruidoCurto(m, t + PASSO * (1 - SWING), 'bandpass', 1700, .06, .08); // caixa "fantasma"
-            // baixo andando: fundamental, 3ª, 5ª e nota de aproximação do próximo acorde
+            var c = m.compasso % 16, volta = Math.floor(m.compasso / 16), dom = c >= 8 && c < 12;
+            var n = notaNoPasso(c, p);
+            if (n) {
+                var nota = TOM + n[0], dur = n[1] * PASSO;
+                var curta = Math.min(dur * .7, PASSO * .9);   // staccato, como na partitura
+                if (c < 4) baixo(m, nota - 12, t);                          // pizzicato grave, misterioso
+                else {
+                    baixo(m, nota - 12, t);
+                    sopro(m, nota, t, n[1] > 1 ? dur * .85 : curta);
+                    if (c >= 12) sopro(m, nota + 12, t, n[1] > 1 ? dur * .85 : curta);   // tutti: oitava acima
+                }
+            }
+            // acompanhamento "marchando": fundamental e quinta nos tempos
             if (p % 2 === 0) {
-                var ter = (c === 4 || c === 5 || c === 7) ? 4 : 3;
-                var nota = [a.r, a.r + ter, a.r + 7, prox.r + (Math.random() < .5 ? 1 : -1)][p / 2];
-                baixo(m, nota, t);
+                var raiz = TOM - 24 + (dom ? 7 : 0), quinta = raiz + 7;
+                if (c >= 2) baixo(m, p % 4 === 0 ? raiz : quinta, t);
+                if (c >= 8 && p % 4 === 0) timpano(m, raiz + 12, t, c >= 12 ? .5 : .3);
             }
-            // piano: acordes curtos no contratempo do 2 e no 4
-            if (p === 3 || (p === 6 && c % 2)) a.ac.forEach(function (n, i) { piano(m, n, t + i * .008, .05, .35); });
-            // tema no sopro nas voltas pares; vibrafone improvisando nas ímpares
-            if (volta % 2 === 0) {
-                TEMA.forEach(function (n) {
-                    if (n[0] === c && n[1] === p) sopro(m, n[2], t, n[3] * PASSO * (n[3] > 1 ? 1 : .8));
-                });
-            } else if (p !== 7 && Math.random() < (p % 2 ? .25 : .45)) {
-                vibra(m, a.esc[Math.floor(Math.random() * a.esc.length)], t);
+            // acordes curtos no contratempo a partir do B; caixa marcando no tutti
+            if (c >= 8 && p % 2 === 1) {
+                var ac = dom ? [TOM + 6, TOM + 10, TOM + 13] : [TOM, TOM + 3, TOM + 7];
+                ac.forEach(function (x, i) { piano(m, x, t + i * .006, c >= 12 ? .055 : .035, .18); });
             }
+            if (c >= 12 && p % 2 === 0) ruidoCurto(m, t, 'bandpass', 1800, .05, .07);
+            // final da volta: rufo e prato; começo da próxima: prato
+            if (c === 15 && p >= 4) { timpano(m, TOM - 12, t, .55); timpano(m, TOM - 12, t + PASSO / 2, .5); }
+            if (c === 0 && p === 0 && volta > 0) ruidoCurto(m, t, 'highpass', 5000, .12, 1.4);
         }
         function agendar() {
             var m = musica; if (!m) return;
             while (m.proximo < audio.currentTime + .15) {
-                var t = m.proximo + (m.passo % 2 ? PASSO * SWING : 0);
-                tocarPasso(m, m.passo, t);
+                var c = m.compasso % 16;
+                PASSO = 60 / (104 + c * 3.4) / 2;     // acelera ao longo da volta (104 → ~155 BPM)
+                tocarPasso(m, m.passo, m.proximo);
                 m.proximo += PASSO;
-                if (++m.passo === 8) { m.passo = 0; m.compasso++; }
+                if (++m.passo === 8) { m.passo = 0; m.compasso++; if (m.compasso % 16 === 0) m.proximo += PASSO * 2; }   // respiro antes de recomeçar
             }
         }
         function tocarMusica(btn) {
