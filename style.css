@@ -250,7 +250,7 @@ section { padding: 96px 0; position: relative; }
    .cena-sala é um quadrado que "cobre" o topo (como background-size: cover),
    então as posições em % batem com a foto (952x952). */
 .cena-sala { --cena: max(100cqw, 100cqh); position: absolute; left: 50%; top: 50%; width: var(--cena); height: var(--cena); transform: translate(-50%, -50%); }
-.cena-sala > div { position: absolute; inset: 0; background: url('images/hero-sala.jpg') center/100% 100% no-repeat; }
+.cena-sala > div { position: absolute; inset: 0; background: url('images/hero-sala.webp') center/100% 100% no-repeat; }
 /* luz da sala ligada: um pouco mais clara que a foto (desligada, escurece — ver .luz-off) */
 .cs-base, .cs-tv { filter: brightness(1.15) saturate(1.04); transition: filter 1.4s ease; }
 .cs-janela { clip-path: polygon(57.35% 32.77%, 100% 25%, 100% 65.97%, 57.35% 69.54%); transition: filter 1.4s ease; }
@@ -264,7 +264,7 @@ section { padding: 96px 0; position: relative; }
     /* mesmo tecido da cortina cinza da foto (recortado da própria imagem) */
     /* largura do tecido na mesma escala da foto (108px de 952) → pregas do mesmo tamanho;
        filtro acerta o tom com a cortina real ao lado da janela (medido na foto: um pouco mais escura e mais quente) */
-    background: url('images/cortina-tecido.jpg') repeat-x left top / calc(var(--cena) * .11345) 100%;
+    background: url('images/cortina-tecido.webp') repeat-x left top / calc(var(--cena) * .11345) 100%;
     filter: brightness(.88) saturate(1.5) hue-rotate(-18deg);
     box-shadow: 0 0 24px rgba(0,0,0,.35); }
 .cs-pano::after { content: ''; position: absolute; top: 0; bottom: 0; width: 14px; }
@@ -624,3 +624,44 @@ section { padding: 96px 0; position: relative; }
 @keyframes celEntra { from { opacity: 0; transform: translateY(10px); } }
 @media (max-width: 991px) { .cel { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .visivel .cel-chat .bolha, .visivel .cel-botoes { animation: none; } }
+
+/* ===== Simulador de orçamento (2026-11-26) ===== */
+#simulador { background: radial-gradient(ellipse at 15% 10%, rgba(34,211,238,.08), transparent 55%), var(--fundo); }
+.sim { display: grid; grid-template-columns: minmax(0,1fr) 340px; gap: 28px; align-items: start; }
+.sim-bloco { padding: 22px 24px; border: 1px solid var(--borda); border-radius: 20px; background: var(--vidro); margin-bottom: 16px; }
+.sim-bloco h3 { font-size: 1.05rem; font-weight: 600; margin: 0 0 14px; display: flex; align-items: center; gap: 10px; }
+.sim-bloco h3 span { width: 28px; height: 28px; border-radius: 50%; display: inline-grid; place-items: center; font: 700 .85rem 'Poppins', sans-serif; color: #031018; background: linear-gradient(135deg, var(--azul), var(--ciano)); flex-shrink: 0; }
+.sim-bloco h3 small { color: var(--suave); font-weight: 400; font-size: .8rem; }
+.sim-opcoes { display: flex; flex-wrap: wrap; gap: 10px; }
+.sim-grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+.sim-op { display: inline-flex; align-items: center; gap: 9px; padding: 11px 16px; border-radius: 14px; border: 1px solid rgba(233,241,248,.14); background: rgba(255,255,255,.03); color: var(--texto); font-size: .95rem; text-align: left; cursor: pointer; transition: border-color .2s, background .2s, box-shadow .2s, transform .15s; }
+.sim-op i { color: var(--ciano); font-size: 1.1rem; }
+.sim-op:hover { border-color: rgba(34,211,238,.45); transform: translateY(-1px); }
+.sim-op.ativo { border-color: var(--ciano); background: rgba(34,211,238,.12); box-shadow: 0 0 0 1px var(--ciano) inset, 0 6px 22px rgba(34,211,238,.15); }
+.sim-op.ativo::after { content: "\F26E"; font-family: 'bootstrap-icons'; margin-left: auto; color: var(--ciano); }
+.sim-op:focus-visible { outline: 2px solid var(--ciano); outline-offset: 2px; }
+.sim-bloco .form-control { background: rgba(255,255,255,.04); border-color: rgba(233,241,248,.16); color: var(--texto); }
+.sim-bloco .form-control::placeholder { color: #6f8195; }
+.sim-bloco .form-control:focus { background: rgba(255,255,255,.06); border-color: var(--ciano); box-shadow: 0 0 0 3px rgba(34,211,238,.18); color: var(--texto); }
+.sim-bloco .form-label { color: var(--suave); font-size: .88rem; }
+.sim-resumo { position: sticky; top: 96px; }
+.sim-resumo-caixa { padding: 24px; border-radius: 22px; border: 1px solid rgba(34,211,238,.3); background: linear-gradient(160deg, rgba(47,123,255,.14), rgba(34,211,238,.05)), var(--fundo-2); box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+.sim-resumo-tit { font: 600 1.05rem 'Poppins', sans-serif; display: flex; align-items: center; gap: 8px; }
+.sim-resumo-tit i { color: var(--ciano); }
+.sim-medidor { height: 8px; border-radius: 99px; background: rgba(255,255,255,.07); margin: 16px 0 8px; overflow: hidden; }
+.sim-medidor-barra { height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--azul), var(--ciano)); transition: width .4s ease; }
+.sim-nivel { color: var(--suave); font-size: .9rem; margin: 0 0 12px; }
+.sim-lista { list-style: none; padding: 0; margin: 0 0 18px; max-height: 260px; overflow: auto; }
+.sim-lista li { display: flex; gap: 8px; align-items: baseline; font-size: .92rem; padding: 5px 0; border-bottom: 1px dashed rgba(233,241,248,.08); }
+.sim-lista li i { color: var(--ciano); }
+.sim-lista li b { color: var(--suave); font-weight: 400; min-width: 74px; }
+#simEnviar.off { opacity: .45; filter: grayscale(.6); box-shadow: none; }
+.sim-aviso { color: #ffb4b9; font-size: .85rem; margin: 8px 0 0; text-align: center; min-height: 1.2em; }
+.sim-nota { color: var(--suave); font-size: .8rem; margin: 10px 0 0; text-align: center; }
+@media (max-width: 991px) {
+    .sim { grid-template-columns: 1fr; }
+    .sim-resumo { position: static; }
+    .sim-lista { max-height: none; }
+}
+@media (max-width: 576px) { .sim-bloco { padding: 18px 16px; } .sim-grade { grid-template-columns: 1fr 1fr; } .sim-op { padding: 10px 12px; font-size: .88rem; } }
+@media (prefers-reduced-motion: reduce) { .sim-op, .sim-medidor-barra { transition: none; } }

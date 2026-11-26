@@ -480,6 +480,86 @@
         });
     }
 
+    // ---------- Simulador de orçamento (2026-11-26) ----------
+    // Monta a mensagem com o que o cliente marcou e abre o WhatsApp da HAT.
+    // Nada é enviado a servidor nenhum: só vira o texto do link wa.me.
+    (function () {
+        var sim = document.getElementById('simulador');
+        if (!sim) return;
+        var ZAP = '5531995012927';
+        var btn = document.getElementById('simEnviar');
+        var lista = document.getElementById('simLista');
+        var barra = document.getElementById('simBarra');
+        var nivel = document.getElementById('simNivel');
+        var aviso = document.getElementById('simAviso');
+        var nome = document.getElementById('simNome');
+        var local = document.getElementById('simLocal');
+        var ROTULO = { imovel: 'Imóvel', ambientes: 'Tamanho', prazo: 'Prazo' };
+
+        function marcados(grupo) {
+            return Array.prototype.map.call(sim.querySelectorAll('[data-grupo="' + grupo + '"] .sim-op.ativo'), function (b) { return b.getAttribute('data-valor'); });
+        }
+        function esc(t) { var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+        function atualizar() {
+            var imovel = marcados('imovel')[0], itens = marcados('itens'), amb = marcados('ambientes')[0], prazo = marcados('prazo')[0];
+            var html = '';
+            if (imovel) html += '<li><b>Imóvel</b> ' + esc(imovel) + '</li>';
+            itens.forEach(function (i) { html += '<li><i class="bi bi-check2"></i> ' + esc(i) + '</li>'; });
+            if (amb) html += '<li><b>Tamanho</b> ' + esc(amb) + '</li>';
+            if (prazo) html += '<li><b>Prazo</b> ' + esc(prazo) + '</li>';
+            lista.innerHTML = html;
+
+            var pontos = (imovel ? 1 : 0) + (itens.length ? 1 : 0) + (amb ? 1 : 0) + (prazo ? 1 : 0);
+            barra.style.width = (pontos * 25) + '%';
+            nivel.textContent = !pontos ? 'Comece marcando o tipo de imóvel.'
+                : itens.length >= 6 ? 'Casa completa: ' + itens.length + ' soluções integradas num só app.'
+                : itens.length >= 3 ? itens.length + ' soluções: já é uma casa inteligente de verdade.'
+                : itens.length ? itens.length + (itens.length > 1 ? ' soluções escolhidas.' : ' solução escolhida.')
+                : 'Agora marque o que quer automatizar.';
+
+            var ok = itens.length > 0;
+            btn.classList.toggle('off', !ok);
+            btn.setAttribute('aria-disabled', ok ? 'false' : 'true');
+            aviso.textContent = ok ? '' : 'Marque pelo menos um item para enviar.';
+
+            var n = nome.value.trim(), l = local.value.trim();
+            var msg = 'Olá! Montei meu projeto no site da HAT:\n';
+            if (n) msg += '\n*Nome:* ' + n;
+            if (l) msg += '\n*Local:* ' + l;
+            if (imovel) msg += '\n*' + ROTULO.imovel + ':* ' + imovel;
+            if (amb) msg += '\n*' + ROTULO.ambientes + ':* ' + amb;
+            if (prazo) msg += '\n*' + ROTULO.prazo + ':* ' + prazo;
+            if (itens.length) msg += '\n\n*Quero automatizar:*\n' + itens.map(function (i) { return '• ' + i; }).join('\n');
+            msg += '\n\nPode me passar um orçamento?';
+            btn.href = 'https://wa.me/' + ZAP + '?text=' + encodeURIComponent(msg);
+        }
+
+        sim.querySelectorAll('.sim-opcoes').forEach(function (g) {
+            var unico = g.hasAttribute('data-unico');
+            g.querySelectorAll('.sim-op').forEach(function (b) {
+                b.setAttribute('aria-pressed', 'false');
+                b.addEventListener('click', function () {
+                    var ligar = !b.classList.contains('ativo');
+                    if (unico) g.querySelectorAll('.sim-op').forEach(function (o) { o.classList.remove('ativo'); o.setAttribute('aria-pressed', 'false'); });
+                    b.classList.toggle('ativo', ligar);
+                    b.setAttribute('aria-pressed', String(ligar));
+                    atualizar();
+                });
+            });
+        });
+        nome.addEventListener('input', atualizar);
+        local.addEventListener('input', atualizar);
+        btn.addEventListener('click', function (e) {
+            if (btn.classList.contains('off')) {
+                e.preventDefault(); e.stopImmediatePropagation();
+                var g = sim.querySelector('[data-grupo="itens"]');
+                g.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, true);
+        atualizar();
+    })();
+
     // ---------- Saudação do painel pelo horário ----------
     var sd = document.getElementById('saudacao');
     if (sd) { var h = new Date().getHours(); sd.textContent = (h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite') + ', família 👋'; }
