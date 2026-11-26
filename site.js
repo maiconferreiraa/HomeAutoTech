@@ -61,9 +61,78 @@
             cinema: { luz: 0, portao: 0, camera: 1, clima: 1, cortina: 0, som: 1 },
             dormir: { luz: 0, portao: 0, camera: 1, clima: 1, cortina: 0, som: 0 }
         };
+        // ---------- Toque do "Som ambiente" (sintetizado no navegador, sem arquivo) ----------
+        // Arpejo suave de sinos sobre um acorde de fundo (Fá maior com 7ª/9ª), ~4 s, volume baixo.
+        var Ctx = window.AudioContext || window.webkitAudioContext, audio = null, toque = null;
+        function desbloquearAudio() {           // precisa acontecer dentro do toque/clique (iPhone)
+            if (!Ctx) return;
+            if (!audio) audio = new Ctx();
+            if (audio.state === 'suspended') audio.resume();
+        }
+        function hz(n) { return 440 * Math.pow(2, (n - 69) / 12); }   // nota MIDI → Hz
+        function pararToque(rapido) {
+            if (!toque) return;
+            var t = audio.currentTime, g = toque.mestre.gain;
+            g.cancelScheduledValues(t); g.setValueAtTime(g.value, t);
+            g.linearRampToValueAtTime(0, t + (rapido ? .08 : .35));
+            var velho = toque; toque = null;
+            setTimeout(function () { try { velho.mestre.disconnect(); } catch (e) {} }, 600);
+            clearTimeout(velho.fim);
+            if (velho.btn) velho.btn.classList.remove('tocando');
+        }
+        function tocarToque(btn) {
+            if (!audio) return;
+            pararToque(true);
+            var t0 = audio.currentTime + .05, dur = 4.2;
+            var mestre = audio.createGain(); mestre.gain.setValueAtTime(0.0001, t0);
+            mestre.gain.exponentialRampToValueAtTime(.22, t0 + .08);
+            mestre.gain.setValueAtTime(.22, t0 + dur - 1.2);
+            mestre.gain.linearRampToValueAtTime(0, t0 + dur);
+            var filtro = audio.createBiquadFilter(); filtro.type = 'lowpass'; filtro.frequency.value = 3800;
+            // eco leve, dá a sensação de ambiente
+            var eco = audio.createDelay(); eco.delayTime.value = .27;
+            var retorno = audio.createGain(); retorno.gain.value = .28;
+            var molhado = audio.createGain(); molhado.gain.value = .3;
+            filtro.connect(mestre); filtro.connect(eco); eco.connect(retorno); retorno.connect(eco);
+            eco.connect(molhado); molhado.connect(mestre); mestre.connect(audio.destination);
+
+            function sino(nota, t, vol, sus) {
+                var f = hz(nota);
+                [[1, 1], [2, .28], [3.01, .07]].forEach(function (h) {   // fundamental + harmônicos
+                    var o = audio.createOscillator(), g = audio.createGain();
+                    o.type = 'sine'; o.frequency.value = f * h[0];
+                    g.gain.setValueAtTime(0.0001, t);
+                    g.gain.exponentialRampToValueAtTime(vol * h[1], t + .012);
+                    g.gain.exponentialRampToValueAtTime(0.0001, t + (sus || 1.5) / h[0]);
+                    o.connect(g); g.connect(filtro); o.start(t); o.stop(t + (sus || 1.5) + .1);
+                });
+            }
+            function fundo(nota, vol) {
+                var o = audio.createOscillator(), g = audio.createGain();
+                o.type = 'triangle'; o.frequency.value = hz(nota);
+                g.gain.setValueAtTime(0.0001, t0);
+                g.gain.exponentialRampToValueAtTime(vol, t0 + .6);
+                g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+                o.connect(g); g.connect(filtro); o.start(t0); o.stop(t0 + dur + .1);
+            }
+            [53, 57, 60, 64].forEach(function (n) { fundo(n, .05); });               // Fá  Lá  Dó  Mi
+            [[69, 0], [72, .16], [76, .32], [79, .48], [81, .64],                   // Lá Dó Mi Sol Lá (sobe)
+             [76, 1.1], [79, 1.34], [84, 1.6, 2.4]].forEach(function (x, i) {      // Mi Sol … Dó agudo (segura)
+                sino(x[0], t0 + x[1], i === 7 ? .32 : .26, x[2]);
+            });
+            toque = { mestre: mestre, btn: btn };
+            if (btn) btn.classList.add('tocando');
+            toque.fim = setTimeout(function () { if (btn) btn.classList.remove('tocando'); toque = null; }, (dur + .2) * 1000);
+        }
+
         var portaoTimer, hero = document.querySelector('.hero');
         function aplicar(btn, on) {
             var k = btn.getAttribute('data-disp');
+            if (k === 'som') {
+                var estava = btn.classList.contains('on');
+                if (on && !estava) tocarToque(btn);
+                else if (!on) pararToque();
+            }
             // a sala da foto do fundo acompanha o painel
             if (hero && k === 'luz') hero.classList.toggle('luz-off', !on);
             if (hero && k === 'cortina') hero.classList.toggle('cortina-fechada', !on);
@@ -76,12 +145,14 @@
         }
         painel.querySelectorAll('.disp').forEach(function (btn) {
             btn.addEventListener('click', function () {
+                desbloquearAudio();
                 aplicar(btn, !btn.classList.contains('on'));
                 painel.querySelectorAll('.cena').forEach(function (c) { c.classList.remove('ativa'); });
             });
         });
         painel.querySelectorAll('.cena').forEach(function (c) {
             c.addEventListener('click', function () {
+                desbloquearAudio();
                 var cena = cenas[c.getAttribute('data-cena')];
                 painel.querySelectorAll('.cena').forEach(function (x) { x.classList.toggle('ativa', x === c); });
                 painel.setAttribute('data-cena', c.getAttribute('data-cena'));
