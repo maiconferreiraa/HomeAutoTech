@@ -61,77 +61,175 @@
             cinema: { luz: 0, portao: 0, camera: 1, clima: 1, cortina: 0, som: 1 },
             dormir: { luz: 0, portao: 0, camera: 1, clima: 1, cortina: 0, som: 0 }
         };
-        // ---------- Toque do "Som ambiente" (sintetizado no navegador, sem arquivo) ----------
-        // Arpejo suave de sinos sobre um acorde de fundo (Fá maior com 7ª/9ª), ~4 s, volume baixo.
-        var Ctx = window.AudioContext || window.webkitAudioContext, audio = null, toque = null;
+        // ---------- Música do "Som ambiente" (gerada no navegador, sem arquivo) ----------
+        // "Jazz de detetive" ORIGINAL (composição própria do site): 120 BPM com swing, baixo
+        // andando, prato de condução, sopro abafado no tema e vibrafone improvisando na volta.
+        // Forma de 8 compassos em Dó menor: Cm7 Cm7 Fm7 Fm7 Ab7 G7 Cm7 G7(b9).
+        // Toca em loop enquanto o "Som ambiente" estiver ligado.
+        var Ctx = window.AudioContext || window.webkitAudioContext, audio = null, musica = null, ruido = null;
         function desbloquearAudio() {           // precisa acontecer dentro do toque/clique (iPhone)
             if (!Ctx) return;
             if (!audio) audio = new Ctx();
             if (audio.state === 'suspended') audio.resume();
         }
         function hz(n) { return 440 * Math.pow(2, (n - 69) / 12); }   // nota MIDI → Hz
-        function pararToque(rapido) {
-            if (!toque) return;
-            var t = audio.currentTime, g = toque.mestre.gain;
-            g.cancelScheduledValues(t); g.setValueAtTime(g.value, t);
-            g.linearRampToValueAtTime(0, t + (rapido ? .08 : .35));
-            var velho = toque; toque = null;
-            setTimeout(function () { try { velho.mestre.disconnect(); } catch (e) {} }, 600);
-            clearTimeout(velho.fim);
-            if (velho.btn) velho.btn.classList.remove('tocando');
-        }
-        function tocarToque(btn) {
-            if (!audio) return;
-            pararToque(true);
-            var t0 = audio.currentTime + .05, dur = 4.2;
-            var mestre = audio.createGain(); mestre.gain.setValueAtTime(0.0001, t0);
-            mestre.gain.exponentialRampToValueAtTime(.22, t0 + .08);
-            mestre.gain.setValueAtTime(.22, t0 + dur - 1.2);
-            mestre.gain.linearRampToValueAtTime(0, t0 + dur);
-            var filtro = audio.createBiquadFilter(); filtro.type = 'lowpass'; filtro.frequency.value = 3800;
-            // eco leve, dá a sensação de ambiente
-            var eco = audio.createDelay(); eco.delayTime.value = .27;
-            var retorno = audio.createGain(); retorno.gain.value = .28;
-            var molhado = audio.createGain(); molhado.gain.value = .3;
-            filtro.connect(mestre); filtro.connect(eco); eco.connect(retorno); retorno.connect(eco);
-            eco.connect(molhado); molhado.connect(mestre); mestre.connect(audio.destination);
+        var BPM = 120, PASSO = 60 / BPM / 2, SWING = 1 / 3;           // colcheia com swing (longa-curta)
+        // acordes: fundamental do baixo, notas do acorde (comping) e escala para o vibrafone
+        var FORMA = [
+            { r: 36, ac: [58, 63, 67], esc: [60, 63, 65, 67, 70, 72, 75] },   // Cm7
+            { r: 36, ac: [58, 63, 67], esc: [60, 63, 65, 67, 70, 72, 75] },   // Cm7
+            { r: 41, ac: [56, 60, 63], esc: [65, 68, 70, 72, 75, 77] },       // Fm7
+            { r: 41, ac: [56, 60, 63], esc: [65, 68, 70, 72, 75, 77] },       // Fm7
+            { r: 44, ac: [54, 60, 63], esc: [63, 66, 68, 72, 75] },           // Ab7
+            { r: 43, ac: [53, 59, 62], esc: [62, 65, 67, 71, 74] },           // G7
+            { r: 36, ac: [58, 63, 67], esc: [60, 63, 67, 70, 72] },           // Cm7
+            { r: 43, ac: [53, 56, 59], esc: [59, 62, 65, 68, 71] }            // G7(b9)
+        ];
+        // tema: [compasso, colcheia (0–7), nota MIDI, duração em colcheias]
+        var TEMA = [
+            [0,2,67,1],[0,3,70,1],[0,4,72,2],[0,7,75,1],
+            [1,0,74,3],[1,4,72,1],[1,5,70,1],[1,6,67,2],
+            [2,1,68,1],[2,2,72,1],[2,3,75,1],[2,4,77,2],[2,6,75,1],[2,7,72,1],
+            [3,0,68,4],[3,6,67,1],[3,7,68,1],
+            [4,0,75,1],[4,1,72,1],[4,2,68,2],[4,4,66,1],[4,5,68,1],[4,6,72,2],
+            [5,0,71,2],[5,2,74,1],[5,3,77,2],[5,5,75,1],[5,6,74,1],[5,7,71,1],
+            [6,0,72,3],[6,4,67,1],[6,5,63,1],[6,6,60,2],
+            [7,2,59,1],[7,3,62,1],[7,4,65,1],[7,5,68,3]
+        ];
 
-            function sino(nota, t, vol, sus) {
-                var f = hz(nota);
-                [[1, 1], [2, .28], [3.01, .07]].forEach(function (h) {   // fundamental + harmônicos
-                    var o = audio.createOscillator(), g = audio.createGain();
-                    o.type = 'sine'; o.frequency.value = f * h[0];
-                    g.gain.setValueAtTime(0.0001, t);
-                    g.gain.exponentialRampToValueAtTime(vol * h[1], t + .012);
-                    g.gain.exponentialRampToValueAtTime(0.0001, t + (sus || 1.5) / h[0]);
-                    o.connect(g); g.connect(filtro); o.start(t); o.stop(t + (sus || 1.5) + .1);
-                });
+        function montar() {
+            var m = { saida: audio.createGain(), passo: 0, compasso: 0, proximo: audio.currentTime + .1 };
+            m.saida.gain.setValueAtTime(0.0001, audio.currentTime);
+            m.saida.gain.exponentialRampToValueAtTime(.9, audio.currentTime + 1.2);   // entra suave
+            var quente = audio.createBiquadFilter(); quente.type = 'lowpass'; quente.frequency.value = 6000;
+            var comp = audio.createDynamicsCompressor(); comp.threshold.value = -20; comp.ratio.value = 3;
+            var vol = audio.createGain(); vol.gain.value = .5;
+            m.saida.connect(quente); quente.connect(comp); comp.connect(vol); vol.connect(audio.destination);
+            // ambiência de clube: eco curto
+            m.eco = audio.createDelay(); m.eco.delayTime.value = .19;
+            var ret = audio.createGain(), molhado = audio.createGain(); ret.gain.value = .25; molhado.gain.value = .2;
+            m.eco.connect(ret); ret.connect(m.eco); m.eco.connect(molhado); molhado.connect(m.saida);
+            if (!ruido) {
+                ruido = audio.createBuffer(1, audio.sampleRate * .5, audio.sampleRate);
+                var d = ruido.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
             }
-            function fundo(nota, vol) {
-                var o = audio.createOscillator(), g = audio.createGain();
-                o.type = 'triangle'; o.frequency.value = hz(nota);
-                g.gain.setValueAtTime(0.0001, t0);
-                g.gain.exponentialRampToValueAtTime(vol, t0 + .6);
-                g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-                o.connect(g); g.connect(filtro); o.start(t0); o.stop(t0 + dur + .1);
-            }
-            [53, 57, 60, 64].forEach(function (n) { fundo(n, .05); });               // Fá  Lá  Dó  Mi
-            [[69, 0], [72, .16], [76, .32], [79, .48], [81, .64],                   // Lá Dó Mi Sol Lá (sobe)
-             [76, 1.1], [79, 1.34], [84, 1.6, 2.4]].forEach(function (x, i) {      // Mi Sol … Dó agudo (segura)
-                sino(x[0], t0 + x[1], i === 7 ? .32 : .26, x[2]);
-            });
-            toque = { mestre: mestre, btn: btn };
-            if (btn) btn.classList.add('tocando');
-            toque.fim = setTimeout(function () { if (btn) btn.classList.remove('tocando'); toque = null; }, (dur + .2) * 1000);
+            return m;
         }
+        function env(g, t, pico, ataque, queda) {
+            g.gain.setValueAtTime(0.0001, t);
+            g.gain.exponentialRampToValueAtTime(pico, t + ataque);
+            g.gain.exponentialRampToValueAtTime(0.0001, t + ataque + queda);
+        }
+        function piano(m, nota, t, vol, dur) {           // piano elétrico (FM) para o acompanhamento
+            var f = hz(nota), car = audio.createOscillator(), mod = audio.createOscillator();
+            var modG = audio.createGain(), g = audio.createGain();
+            car.frequency.value = f; mod.frequency.value = f;
+            modG.gain.setValueAtTime(f * 1.2, t); modG.gain.exponentialRampToValueAtTime(f * .05, t + .3);
+            mod.connect(modG); modG.connect(car.frequency);
+            env(g, t, vol, .005, dur);
+            car.connect(g); g.connect(m.saida);
+            car.start(t); mod.start(t); car.stop(t + dur + .1); mod.stop(t + dur + .1);
+        }
+        function baixo(m, nota, t) {                      // contrabaixo dedilhado
+            var o = audio.createOscillator(), f = audio.createBiquadFilter(), g = audio.createGain();
+            o.type = 'triangle'; o.frequency.value = hz(nota);
+            f.type = 'lowpass'; f.frequency.setValueAtTime(900, t); f.frequency.exponentialRampToValueAtTime(300, t + .2);
+            env(g, t, .6, .008, .42);
+            o.connect(f); f.connect(g); g.connect(m.saida); o.start(t); o.stop(t + .55);
+        }
+        function sopro(m, nota, t, dur) {                 // sopro abafado (tipo sax com surdina)
+            var f = hz(nota), o1 = audio.createOscillator(), o2 = audio.createOscillator();
+            var lfo = audio.createOscillator(), lfoG = audio.createGain();
+            var fil = audio.createBiquadFilter(), g = audio.createGain();
+            o1.type = 'sawtooth'; o2.type = 'square'; o1.frequency.value = f; o2.frequency.value = f * 1.003;
+            lfo.frequency.value = 5.2; lfoG.gain.setValueAtTime(0, t); lfoG.gain.linearRampToValueAtTime(f * .007, t + Math.min(.25, dur));
+            lfo.connect(lfoG); lfoG.connect(o1.frequency); lfoG.connect(o2.frequency);
+            fil.type = 'lowpass'; fil.Q.value = 1.2;
+            fil.frequency.setValueAtTime(500, t); fil.frequency.linearRampToValueAtTime(1500, t + .06);
+            fil.frequency.linearRampToValueAtTime(1000, t + dur);
+            g.gain.setValueAtTime(0.0001, t);
+            g.gain.exponentialRampToValueAtTime(.075, t + .035);
+            g.gain.setValueAtTime(.075, t + Math.max(.04, dur - .06));
+            g.gain.exponentialRampToValueAtTime(0.0001, t + dur + .08);
+            o1.connect(fil); o2.connect(fil); fil.connect(g); g.connect(m.saida); g.connect(m.eco);
+            [o1, o2, lfo].forEach(function (o) { o.start(t); o.stop(t + dur + .15); });
+        }
+        function vibra(m, nota, t) {                      // vibrafone (tremolo leve)
+            var f = hz(nota), o = audio.createOscillator(), o4 = audio.createOscillator();
+            var g = audio.createGain(), g4 = audio.createGain(), trem = audio.createOscillator(), tremG = audio.createGain();
+            o.frequency.value = f; o4.frequency.value = f * 4;
+            env(g, t, .09, .004, 1.6); env(g4, t, .018, .002, .25);
+            trem.frequency.value = 5; tremG.gain.value = .025; trem.connect(tremG); tremG.connect(g.gain);
+            o.connect(g); o4.connect(g4); g.connect(m.saida); g4.connect(m.saida); g.connect(m.eco);
+            [o, o4, trem].forEach(function (x) { x.start(t); x.stop(t + 1.8); });
+        }
+        function ruidoCurto(m, t, tipo, freq, vol, dur) {
+            var s = audio.createBufferSource(), f = audio.createBiquadFilter(), g = audio.createGain();
+            s.buffer = ruido; f.type = tipo; f.frequency.value = freq; f.Q.value = tipo === 'bandpass' ? 1.2 : .7;
+            env(g, t, vol, .002, dur);
+            s.connect(f); f.connect(g); g.connect(m.saida); s.start(t, Math.random() * .3); s.stop(t + dur + .05);
+        }
+
+        function tocarPasso(m, p, t) {                    // p = colcheia 0–7 do compasso
+            var c = m.compasso % 8, volta = Math.floor(m.compasso / 8), a = FORMA[c], prox = FORMA[(c + 1) % 8];
+            // bateria: condução no prato (1, 2, 2e, 3, 4, 4e) + "chick" do chimbal no 2 e no 4
+            if ([0, 2, 3, 4, 6, 7].indexOf(p) >= 0) ruidoCurto(m, t, 'highpass', 8000, p % 2 ? .025 : .045, .22);
+            if (p === 2 || p === 6) ruidoCurto(m, t, 'bandpass', 3200, .035, .05);
+            if (p === 6 && Math.random() < .3) ruidoCurto(m, t + PASSO * (1 - SWING), 'bandpass', 1700, .06, .08); // caixa "fantasma"
+            // baixo andando: fundamental, 3ª, 5ª e nota de aproximação do próximo acorde
+            if (p % 2 === 0) {
+                var ter = (c === 4 || c === 5 || c === 7) ? 4 : 3;
+                var nota = [a.r, a.r + ter, a.r + 7, prox.r + (Math.random() < .5 ? 1 : -1)][p / 2];
+                baixo(m, nota, t);
+            }
+            // piano: acordes curtos no contratempo do 2 e no 4
+            if (p === 3 || (p === 6 && c % 2)) a.ac.forEach(function (n, i) { piano(m, n, t + i * .008, .05, .35); });
+            // tema no sopro nas voltas pares; vibrafone improvisando nas ímpares
+            if (volta % 2 === 0) {
+                TEMA.forEach(function (n) {
+                    if (n[0] === c && n[1] === p) sopro(m, n[2], t, n[3] * PASSO * (n[3] > 1 ? 1 : .8));
+                });
+            } else if (p !== 7 && Math.random() < (p % 2 ? .25 : .45)) {
+                vibra(m, a.esc[Math.floor(Math.random() * a.esc.length)], t);
+            }
+        }
+        function agendar() {
+            var m = musica; if (!m) return;
+            while (m.proximo < audio.currentTime + .15) {
+                var t = m.proximo + (m.passo % 2 ? PASSO * SWING : 0);
+                tocarPasso(m, m.passo, t);
+                m.proximo += PASSO;
+                if (++m.passo === 8) { m.passo = 0; m.compasso++; }
+            }
+        }
+        function tocarMusica(btn) {
+            if (!audio || musica) return;
+            musica = montar(); musica.btn = btn;
+            agendar(); musica.timer = setInterval(agendar, 40);
+            if (btn) btn.classList.add('tocando');
+        }
+        function pararMusica() {
+            var m = musica; if (!m) return; musica = null;
+            clearInterval(m.timer);
+            var t = audio.currentTime;
+            m.saida.gain.cancelScheduledValues(t); m.saida.gain.setValueAtTime(m.saida.gain.value, t);
+            m.saida.gain.linearRampToValueAtTime(0, t + .6);
+            setTimeout(function () { try { m.saida.disconnect(); m.eco.disconnect(); } catch (e) {} }, 900);
+            if (m.btn) m.btn.classList.remove('tocando');
+        }
+        // aba escondida: pausa; voltou: continua de onde estava
+        document.addEventListener('visibilitychange', function () {
+            if (!audio || !musica) return;
+            if (document.hidden) audio.suspend(); else audio.resume();
+        });
 
         var portaoTimer, hero = document.querySelector('.hero');
         function aplicar(btn, on) {
             var k = btn.getAttribute('data-disp');
             if (k === 'som') {
                 var estava = btn.classList.contains('on');
-                if (on && !estava) tocarToque(btn);
-                else if (!on) pararToque();
+                if (on && !estava) tocarMusica(btn);
+                else if (!on) pararMusica();
             }
             // a sala da foto do fundo acompanha o painel
             if (hero && k === 'luz') hero.classList.toggle('luz-off', !on);
