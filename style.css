@@ -251,13 +251,14 @@ section { padding: 96px 0; position: relative; }
    então as posições em % batem com a foto (952x952). */
 .cena-sala { --cena: max(100cqw, 100cqh); position: absolute; left: 50%; top: 50%; width: var(--cena); height: var(--cena); transform: translate(-50%, -50%); }
 .cena-sala > div { position: absolute; inset: 0; background: url('images/hero-sala.jpg') center/100% 100% no-repeat; }
-.cs-base { transition: filter 1.4s ease; }
+/* luz da sala ligada: um pouco mais clara que a foto (desligada, escurece — ver .luz-off) */
+.cs-base, .cs-tv { filter: brightness(1.15) saturate(1.04); transition: filter 1.4s ease; }
 .cs-janela { clip-path: polygon(57.35% 32.77%, 100% 25%, 100% 65.97%, 57.35% 69.54%); transition: filter 1.4s ease; }
 .cs-tv { clip-path: polygon(9.45% 34.98%, 41.81% 39.6%, 41.81% 57.35%, 9.45% 57.88%); }
 .cena-sala > .cs-tv-luz { background: radial-gradient(ellipse 34% 30% at 26% 47%, rgba(150,200,255,.55), rgba(90,150,255,.18) 45%, transparent 75%);
     mix-blend-mode: screen; opacity: 0; transition: opacity 1.4s ease; }
 .cena-sala > .cs-cortina { background: none; left: 57.35%; top: 25%; width: 42.65%; height: 47.5%; right: auto; bottom: auto;
-    clip-path: polygon(0% 16.36%, 100% 0%, 100% 90%, 0% 100%); transition: filter 1.4s ease; }
+    clip-path: polygon(0% 16.36%, 100% 0%, 100% 90%, 0% 100%); filter: brightness(1.15) saturate(1.04); transition: filter 1.4s ease; }
 .cs-pano { position: absolute; top: 0; bottom: 0; width: 0; transition: width 1.8s cubic-bezier(.45,.05,.25,1);
     /* mesmo tecido da cortina cinza da foto (recortado da própria imagem) */
     /* largura do tecido na mesma escala da foto (108px de 952) → pregas do mesmo tamanho;
@@ -275,6 +276,7 @@ section { padding: 96px 0; position: relative; }
 
 /* luzes apagadas: a sala escurece, a cidade lá fora segue acesa e a TV ilumina */
 .hero.luz-off .cs-base { filter: brightness(.28) saturate(.8); }
+.hero.luz-off .cs-tv { filter: none; }
 .hero.luz-off .cs-janela { filter: brightness(.8); }
 .hero.luz-off .cs-cortina { filter: brightness(.35); }
 .hero.luz-off .cs-tv-luz { opacity: .55; }
