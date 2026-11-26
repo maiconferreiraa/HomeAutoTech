@@ -372,7 +372,10 @@
                 rec = new SR();
                 rec.lang = 'pt-BR'; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 3;
                 var entendeu = false;
-                rec.onstart = function () { ouvindo = true; vozBtn.classList.add('ouvindo'); mostrar('Ouvindo…', 'Ex.: "apaga a luz" ou "modo cinema"'); };
+                var vigia = setTimeout(function () {   // sem resposta do microfone: quase sempre é a permissão pendente
+                    if (ouvindo) mostrar('Microfone', 'Clique em “Permitir” no aviso do navegador (perto do endereço do site) e fale de novo.');
+                }, 6000);
+                rec.onstart = function () { clearTimeout(vigia); ouvindo = true; vozBtn.classList.add('ouvindo'); mostrar('Ouvindo…', 'Ex.: "apaga a luz" ou "modo cinema"'); };
                 rec.onspeechstart = function () { if (!medidor) alvoNivel = .7; };
                 rec.onresult = function (e) {
                     var r = e.results[e.results.length - 1];
@@ -386,16 +389,22 @@
                     else responder('Desculpe, não entendi. Tente "apaga a luz" ou "fecha a cortina".');
                 };
                 rec.onerror = function (e) {
-                    parar(); entendeu = true;
-                    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { mostrar('Microfone', 'Libere o microfone para falar com a casa.'); esconder(3500); }
+                    clearTimeout(vigia); parar(); entendeu = true;
+                    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { mostrar('Microfone bloqueado', 'Clique no cadeado 🔒 ao lado do endereço do site, permita o Microfone e recarregue a página.'); esconder(7000); }
+                    else if (e.error === 'audio-capture') { mostrar('Microfone', 'Não encontrei um microfone neste aparelho.'); esconder(4000); }
+                    else if (e.error === 'network') { mostrar('', 'O reconhecimento de voz precisa de internet. Confira a conexão e tente de novo.'); esconder(4000); }
                     else if (e.error === 'no-speech') { mostrar('', 'Não ouvi nada. Toque e fale de novo.'); esconder(2500); }
                     else if (e.error !== 'aborted') { mostrar('', 'Não consegui ouvir agora. Tente de novo.'); esconder(2500); }
                 };
-                rec.onend = function () { parar(); if (!entendeu) esconder(300); };
+                rec.onend = function () { clearTimeout(vigia); parar(); if (!entendeu) esconder(300); };
                 ouvindo = true; vozBtn.classList.add('ouvindo');
                 mostrar('Ouvindo…', 'Fale um comando (se o navegador pedir, permita o microfone)');   // resposta imediata ao toque
                 ligarMedidor();
-                try { rec.start(); } catch (err) { parar(); esconder(); }
+                try { rec.start(); } catch (err) { clearTimeout(vigia); parar(); esconder(); }
+                // microfone já bloqueado neste site: avisa na hora como liberar
+                if (navigator.permissions && navigator.permissions.query) navigator.permissions.query({ name: 'microphone' }).then(function (pm) {
+                    if (pm.state === 'denied' && ouvindo) { clearTimeout(vigia); rec.abort(); parar(); mostrar('Microfone bloqueado', 'Clique no cadeado 🔒 ao lado do endereço do site, permita o Microfone e recarregue a página.'); esconder(7000); }
+                }).catch(function () {});
             });
             if (window.speechSynthesis) speechSynthesis.getVoices();   // carrega a lista de vozes
         }
