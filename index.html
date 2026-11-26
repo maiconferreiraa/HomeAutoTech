@@ -115,6 +115,30 @@
     "@type": "Answer",
     "text": "Sim. Entregamos tudo configurado, ensinamos a família a usar e seguimos disponíveis no pós-venda para ajustes e novas ideias."
    }
+  },
+  {
+   "@type": "Question",
+   "name": "O que é o Home Assistant e por que vocês usam?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "É uma plataforma de automação residencial de código aberto, usada no mundo todo, que roda dentro da sua casa. Com ela, equipamentos de marcas diferentes funcionam juntos em um único aplicativo, as automações continuam rodando mesmo sem internet e você não fica preso a um único fabricante."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "O que é a Central de Operações HAT?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "É um sistema criado pela HAT para acompanhar, em um único painel, o funcionamento do que instalamos: câmeras gravando, HD do gravador, automações, rede e equipamentos online. Assim a nossa equipe percebe uma falha rápido e age o quanto antes, sem esperar você ligar avisando."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Vocês fazem abertura de portão para condomínios?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Sim, com o Sentinel, sistema da HAT para condomínios. Cada morador autorizado abre o portão de entrada ou de saída pelo celular, a administração aprova, pausa ou remove acessos, e todas as aberturas ficam registradas, com relatório em PDF."
+   }
   }
  ]
 }
@@ -232,6 +256,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto align-items-lg-center">
                         <li class="nav-item"><a class="nav-link" href="#servicos">Soluções</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#diferenciais">Diferenciais</a></li>
                         <li class="nav-item"><a class="nav-link" href="#como-funciona">Como funciona</a></li>
                         <li class="nav-item"><a class="nav-link" href="#portfolio">Projetos</a></li>
                         <li class="nav-item"><a class="nav-link" href="#depoimentos">Clientes</a></li>
@@ -357,6 +382,129 @@
                             <div class="col-sm-6 revela" style="--atraso:.24s"><div class="beneficio"><i class="bi bi-graph-up-arrow"></i><h3>Valorização</h3><p>Casa inteligente é diferencial na hora de vender ou alugar, e um padrão que veio para ficar.</p></div></div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIFERENCIAIS (2026-11-26): Home Assistant + Central de Operações HAT -->
+        <section id="diferenciais">
+            <div class="dif-brilho" aria-hidden="true"></div>
+            <div class="container">
+                <div class="titulo-secao revela">
+                    <span class="sobretitulo">O nosso diferencial</span>
+                    <h2>Automação que não te prende a uma marca <span class="grad">e não te deixa sozinho</span></h2>
+                    <p>A maioria entrega um aplicativo e vai embora. A gente entrega um sistema aberto, que cresce com a sua casa, e continua de olho nele depois da instalação.</p>
+                </div>
+
+                <!-- 1. Home Assistant -->
+                <div class="row align-items-center gy-5 dif-bloco">
+                    <div class="col-lg-6 order-lg-2 revela">
+                        <span class="dif-etiqueta"><i class="bi bi-cpu"></i> Plataforma Home Assistant</span>
+                        <h3 class="dif-titulo">Um só cérebro para a casa inteira</h3>
+                        <p class="dif-texto">Usamos o <b>Home Assistant</b>, a plataforma de automação residencial de código aberto mais usada do mundo. Ele roda <b>dentro da sua casa</b> e faz equipamentos de marcas diferentes conversarem entre si, em um único aplicativo.</p>
+                        <ul class="dif-lista">
+                            <li><i class="bi bi-house-lock"></i><div><b>Funciona mesmo sem internet</b><span>As automações rodam na própria casa. Caiu a internet? Luzes, cenas e sensores continuam obedecendo.</span></div></li>
+                            <li><i class="bi bi-diagram-3"></i><div><b>Todas as marcas em um app</b><span>Câmeras, portão, ar-condicionado, Alexa, Google, sensores e interruptores de fabricantes diferentes, juntos.</span></div></li>
+                            <li><i class="bi bi-unlock"></i><div><b>Sem ficar refém de fabricante</b><span>Se uma marca sair do mercado ou mudar as regras, a sua casa segue funcionando e pode trocar de peça.</span></div></li>
+                            <li><i class="bi bi-incognito"></i><div><b>Privacidade de verdade</b><span>Os dados da sua família ficam na sua casa, não espalhados em servidores de terceiros.</span></div></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-6 order-lg-1 revela" style="--atraso:.1s">
+                        <div class="hub" aria-hidden="true">
+                            <svg class="hub-linhas" viewBox="0 0 400 400"><g>
+                                <line x1="200" y1="200" x2="200" y2="48"/><line x1="200" y1="200" x2="332" y2="124"/><line x1="200" y1="200" x2="332" y2="276"/>
+                                <line x1="200" y1="200" x2="200" y2="352"/><line x1="200" y1="200" x2="68" y2="276"/><line x1="200" y1="200" x2="68" y2="124"/></g>
+                                <g class="hub-pulsos"><circle r="3.5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M200,48 L200,200"/></circle>
+                                <circle r="3.5"><animateMotion dur="2.4s" begin=".4s" repeatCount="indefinite" path="M200,200 L332,124"/></circle>
+                                <circle r="3.5"><animateMotion dur="2.4s" begin=".8s" repeatCount="indefinite" path="M332,276 L200,200"/></circle>
+                                <circle r="3.5"><animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite" path="M200,200 L200,352"/></circle>
+                                <circle r="3.5"><animateMotion dur="2.4s" begin="1.6s" repeatCount="indefinite" path="M68,276 L200,200"/></circle>
+                                <circle r="3.5"><animateMotion dur="2.4s" begin="2s" repeatCount="indefinite" path="M200,200 L68,124"/></circle></g>
+                            </svg>
+                            <div class="hub-centro"><i class="bi bi-house-gear-fill"></i><b>Home Assistant</b><small>na sua casa</small></div>
+                            <div class="hub-no" style="--x:50%;--y:12%"><i class="bi bi-lightbulb"></i><span>Iluminação</span></div>
+                            <div class="hub-no" style="--x:83%;--y:31%"><i class="bi bi-camera-video"></i><span>Câmeras</span></div>
+                            <div class="hub-no" style="--x:83%;--y:69%"><i class="bi bi-thermometer-half"></i><span>Clima</span></div>
+                            <div class="hub-no" style="--x:50%;--y:88%"><i class="bi bi-door-open"></i><span>Portão</span></div>
+                            <div class="hub-no" style="--x:17%;--y:69%"><i class="bi bi-mic"></i><span>Alexa · Google</span></div>
+                            <div class="hub-no" style="--x:17%;--y:31%"><i class="bi bi-window"></i><span>Cortinas</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Central de Operações HAT -->
+                <div class="row align-items-center gy-5 dif-bloco">
+                    <div class="col-lg-6 revela">
+                        <span class="dif-etiqueta dif-exclusivo"><i class="bi bi-stars"></i> Exclusivo HAT</span>
+                        <h3 class="dif-titulo">Central de Operações: a sua casa acompanhada de perto</h3>
+                        <p class="dif-texto">Criamos um sistema próprio que acompanha, em um só painel, a saúde de tudo o que instalamos. Câmera que parou de gravar, HD do gravador com defeito, equipamento que saiu do ar: a nossa equipe enxerga na hora e age, <b>de preferência antes de você perceber</b>.</p>
+                        <ul class="dif-lista">
+                            <li><i class="bi bi-camera-reels"></i><div><b>Câmera por câmera</b><span>Sinal, gravação e HD do gravador conferidos o tempo todo. Nada de descobrir que não gravou só quando precisou da imagem.</span></div></li>
+                            <li><i class="bi bi-activity"></i><div><b>Automação e rede sob controle</b><span>Home Assistant, luzes, fechaduras, sensores e internet monitorados com histórico de estabilidade.</span></div></li>
+                            <li><i class="bi bi-phone"></i><div><b>Você também vê</b><span>Acesso ao painel da sua casa, com o estado de cada sistema, de onde estiver.</span></div></li>
+                            <li><i class="bi bi-tools"></i><div><b>Suporte que se antecipa</b><span>Menos "parou e eu nem sabia", mais manutenção feita na hora certa.</span></div></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-6 revela" style="--atraso:.1s">
+                        <div class="noc" aria-label="Exemplo da tela da Central de Operações">
+                            <div class="noc-topo">
+                                <span class="noc-marca"><i class="bi bi-broadcast"></i> Central de Operações</span>
+                                <span class="noc-ao-vivo"><span class="led"></span> AO VIVO <b id="noc-hora">--:--:--</b></span>
+                            </div>
+                            <div class="noc-grade">
+                                <div class="noc-card ok"><small>Câmeras</small><b>12<span>/12</span></b><em>gravando</em></div>
+                                <div class="noc-card ok"><small>Gravador · HD</small><b>2 TB</b><em>saudável</em></div>
+                                <div class="noc-card ok"><small>Automação</small><b>46</b><em>dispositivos online</em></div>
+                                <div class="noc-card ok"><small>Internet</small><b id="noc-ping">18<span> ms</span></b><em>estável</em></div>
+                            </div>
+                            <div class="noc-grafico">
+                                <div class="noc-grafico-topo"><small>Estabilidade · 24 h</small><b>99,8%</b></div>
+                                <svg viewBox="0 0 300 60" preserveAspectRatio="none"><defs><linearGradient id="nocArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22d3ee" stop-opacity=".35"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></linearGradient></defs>
+                                    <path class="noc-area" d="M0,14 L20,12 L40,13 L60,11 L80,12 L100,12 L120,10 L140,34 L150,13 L170,11 L190,12 L210,10 L230,11 L250,12 L270,10 L300,11 L300,60 L0,60 Z" fill="url(#nocArea)"/>
+                                    <path class="noc-linha" d="M0,14 L20,12 L40,13 L60,11 L80,12 L100,12 L120,10 L140,34 L150,13 L170,11 L190,12 L210,10 L230,11 L250,12 L270,10 L300,11"/></svg>
+                            </div>
+                            <ul class="noc-eventos" id="noc-eventos">
+                                <li class="ok"><i class="bi bi-check-circle-fill"></i><span>Câmera Garagem voltou a gravar</span><time>agora</time></li>
+                                <li class="info"><i class="bi bi-info-circle-fill"></i><span>Cena "Boa noite" executada</span><time>2 min</time></li>
+                                <li class="alerta"><i class="bi bi-exclamation-triangle-fill"></i><span>Sensor da varanda com bateria fraca</span><time>8 min</time></li>
+                            </ul>
+                        </div>
+                        <p class="noc-legenda">Tela ilustrativa da Central de Operações HAT.</p>
+                    </div>
+                </div>
+
+                <!-- 3. Sentinel: portões de condomínio -->
+                <div class="row align-items-center gy-5 dif-bloco" id="condominios">
+                    <div class="col-lg-6 order-lg-2 revela">
+                        <span class="dif-etiqueta dif-exclusivo"><i class="bi bi-buildings"></i> Para condomínios · Sistema Sentinel</span>
+                        <h3 class="dif-titulo">Portaria inteligente: o morador abre o portão pelo celular</h3>
+                        <p class="dif-texto">O <b>Sentinel</b> é o sistema da HAT para condomínios. Cada morador autorizado abre o portão de entrada ou de saída com um toque no celular, e a administração tem controle total de quem entra, quando e por onde.</p>
+                        <ul class="dif-lista">
+                            <li><i class="bi bi-phone-vibrate"></i><div><b>Sem controle remoto, sem tag perdida</b><span>O celular vira a chave. Abriu, recebeu a confirmação na hora.</span></div></li>
+                            <li><i class="bi bi-person-check"></i><div><b>Cadastro com aprovação</b><span>A administração libera, pausa ou remove o acesso de um morador ou de uma casa inteira em segundos.</span></div></li>
+                            <li><i class="bi bi-journal-text"></i><div><b>Histórico e relatório de auditoria</b><span>Cada abertura fica registrada, com relatório em PDF para a gestão e a assembleia.</span></div></li>
+                            <li><i class="bi bi-hdd-network"></i><div><b>Roda na rede do próprio condomínio</b><span>O comando vai direto ao portão pela rede local, com backup diário e aviso automático à administração se algo sair do ar.</span></div></li>
+                            <li><i class="bi bi-megaphone"></i><div><b>Comunicados aos moradores</b><span>Avisos da administração chegam direto no celular de quem mora lá.</span></div></li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-6 order-lg-1 revela" style="--atraso:.1s">
+                        <div class="cel" aria-label="Exemplo do Sentinel no celular do morador">
+                            <div class="cel-tela">
+                                <div class="cel-topo"><span class="cel-avatar"><i class="bi bi-shield-lock-fill"></i></span><div><b>Sentinel · Portaria</b><small><span class="led"></span> online</small></div></div>
+                                <div class="cel-chat">
+                                    <div class="bolha sistema">Olá, Ana (Casa 12) 👋<br>O que deseja fazer?</div>
+                                    <div class="cel-botoes"><span class="cel-bt">🔓 Abrir entrada</span><span class="cel-bt">🚗 Abrir saída</span></div>
+                                    <div class="bolha eu">🔓 Abrir entrada</div>
+                                    <div class="bolha sistema ok">✅ Portão de entrada aberto<br><small>Casa 12 · registrado às 18:42</small></div>
+                                    <div class="bolha sistema aviso">📢 Comunicado: manutenção da piscina sábado, 8h às 12h.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-5 revela">
+                    <a href="https://wa.me/5531995012927?text=Ol%C3%A1!%20Quero%20saber%20mais%20sobre%20os%20diferenciais%20da%20HAT%20(Home%20Assistant%2C%20Central%20de%20Opera%C3%A7%C3%B5es%20e%20Sentinel)." target="_blank" rel="noopener noreferrer" class="btn btn-neon btn-lg" data-evento="whatsapp_diferencial"><i class="bi bi-whatsapp"></i> Quero isso na minha casa ou condomínio</a>
                 </div>
             </div>
         </section>
@@ -512,7 +660,19 @@
                     </div>
                     <div class="accordion-item">
                         <h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6" aria-expanded="false" aria-controls="faq6">Vocês dão suporte depois da instalação?</button></h3>
-                        <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqLista"><div class="accordion-body">Sim. Entregamos tudo configurado, ensinamos a família a usar e seguimos disponíveis no pós-venda para ajustes e novas ideias.</div></div>
+                        <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqLista"><div class="accordion-body">Sim. Entregamos tudo configurado, ensinamos a família a usar e seguimos disponíveis no pós-venda para ajustes e novas ideias. Com a Central de Operações, ainda acompanhamos a saúde dos sistemas depois da entrega.</div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7" aria-expanded="false" aria-controls="faq7">O que é o Home Assistant e por que vocês usam?</button></h3>
+                        <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqLista"><div class="accordion-body">É uma plataforma de automação residencial de código aberto, usada no mundo todo, que roda dentro da sua casa. Com ela, equipamentos de marcas diferentes funcionam juntos em um único aplicativo, as automações continuam rodando mesmo sem internet e você não fica preso a um único fabricante.</div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8" aria-expanded="false" aria-controls="faq8">O que é a Central de Operações HAT?</button></h3>
+                        <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqLista"><div class="accordion-body">É um sistema criado pela HAT para acompanhar, em um único painel, o funcionamento do que instalamos: câmeras gravando, HD do gravador, automações, rede e equipamentos online. Assim a nossa equipe percebe uma falha rápido e age o quanto antes, sem esperar você ligar avisando.</div></div>
+                    </div>
+                    <div class="accordion-item">
+                        <h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq9" aria-expanded="false" aria-controls="faq9">Vocês fazem abertura de portão para condomínios?</button></h3>
+                        <div id="faq9" class="accordion-collapse collapse" data-bs-parent="#faqLista"><div class="accordion-body">Sim, com o Sentinel, sistema da HAT para condomínios. Cada morador autorizado abre o portão de entrada ou de saída pelo celular, a administração aprova, pausa ou remove acessos, e todas as aberturas ficam registradas, com relatório em PDF.</div></div>
                     </div>
                 </div>
             </div>

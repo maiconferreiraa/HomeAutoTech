@@ -399,6 +399,42 @@
         }
     }
 
+    // ---------- Central de Operações (tela ilustrativa): relógio, ping e eventos ao vivo ----------
+    var noc = document.querySelector('.noc');
+    if (noc) {
+        var hora = document.getElementById('noc-hora'), ping = document.getElementById('noc-ping'), lista = document.getElementById('noc-eventos');
+        var EVENTOS = [
+            ['ok', 'check-circle-fill', 'Backup das gravações concluído'],
+            ['info', 'info-circle-fill', 'Cena "Chegar em casa" executada'],
+            ['ok', 'check-circle-fill', 'Internet de volta em 40 s, tudo online'],
+            ['info', 'info-circle-fill', 'Portão social aberto pelo app'],
+            ['alerta', 'exclamation-triangle-fill', 'Câmera Quintal sem sinal, técnico avisado'],
+            ['ok', 'check-circle-fill', 'Câmera Quintal voltou a gravar'],
+            ['info', 'info-circle-fill', 'Ar da suíte ligado em 23 °C'],
+            ['ok', 'check-circle-fill', 'HD do gravador verificado: saudável']
+        ], ev = 0, visivelNoc = false;
+        function relogio() { if (hora) hora.textContent = new Date().toLocaleTimeString('pt-BR'); }
+        relogio(); setInterval(relogio, 1000);
+        if (!reduz) {
+            setInterval(function () {
+                if (!visivelNoc || document.hidden) return;
+                if (ping) ping.firstChild.nodeValue = String(14 + Math.round(Math.random() * 9));
+            }, 2000);
+            setInterval(function () {
+                if (!visivelNoc || document.hidden || !lista) return;
+                var e = EVENTOS[ev++ % EVENTOS.length], li = document.createElement('li');
+                li.className = e[0];
+                li.innerHTML = '<i class="bi bi-' + e[1] + '"></i><span></span><time>agora</time>';
+                li.querySelector('span').textContent = e[2];
+                lista.querySelectorAll('time').forEach(function (t, i) { t.textContent = (i + 1) * 3 + ' min'; });
+                lista.insertBefore(li, lista.firstChild);
+                while (lista.children.length > 3) lista.removeChild(lista.lastChild);
+            }, 3800);
+            if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visivelNoc = es[0].isIntersecting; }).observe(noc);
+            else visivelNoc = true;
+        }
+    }
+
     // ---------- Vídeos dos projetos: só baixam/tocam quando aparecem na tela ----------
     // (antes tocavam sozinhos desde o início e disputavam com a abertura → travadinha)
     var videos = document.querySelectorAll('.portfolio-swiper video');
