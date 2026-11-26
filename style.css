@@ -276,12 +276,18 @@ section { padding: 96px 0; position: relative; }
 .hero.cortina-fechada .cs-pano { width: 51%; }
 
 /* luzes apagadas: a sala escurece, a cidade lá fora segue acesa e a TV ilumina */
-.hero.luz-off .cs-base { filter: brightness(.28) saturate(.8); }
+.hero.luz-off .cs-base { filter: brightness(.45) saturate(.85); }
 .hero.luz-off .cs-tv { filter: none; }
 .hero.luz-off .cs-janela { filter: brightness(.8); }
-.hero.luz-off .cs-cortina { filter: brightness(.35); }
+.hero.luz-off .cs-cortina { filter: brightness(.5); }
 .hero.luz-off .cs-tv-luz { opacity: .55; }
-@media (prefers-reduced-motion: reduce) { .cs-base, .cs-janela, .cs-cortina, .cs-pano, .cs-tv-luz { transition: none; } }
+/* a janela "derrete" no escuro em vez de terminar numa linha reta */
+.cs-janela { -webkit-mask-image: linear-gradient(180deg, #000 52%, transparent 70%); mask-image: linear-gradient(180deg, #000 52%, transparent 70%); }
+/* sombra em degradê no cômodo todo: mais escuro no chão, mais leve no alto */
+.cena-sala > .cs-sombra { background: linear-gradient(180deg, rgba(5,8,15,.25) 0%, rgba(5,8,15,.4) 40%, rgba(5,8,15,.62) 70%, rgba(5,8,15,.78) 100%);
+    opacity: 0; transition: opacity 1.4s ease; pointer-events: none; }
+.hero.luz-off .cs-sombra { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .cs-base, .cs-janela, .cs-cortina, .cs-pano, .cs-tv-luz, .cs-sombra { transition: none; } }
 
 .hero-grid { position: absolute; inset: 0;
     background-image: linear-gradient(rgba(34,211,238,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,.07) 1px, transparent 1px);
