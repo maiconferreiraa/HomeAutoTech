@@ -34,12 +34,26 @@ function responder(res, status, corpo, cacheSeg) {
     res.status(status).send(JSON.stringify(corpo));
 }
 
+// Lê só o primeiro objeto JSON da variável: tolera algo colado a mais depois (ex.: colou duas vezes).
+function lerJsonConta(texto) {
+    const s = String(texto).trim();
+    let nivel = 0, emTexto = false, escape = false;
+    for (let i = 0; i < s.length; i++) {
+        const c = s[i];
+        if (emTexto) { if (escape) escape = false; else if (c === '\\') escape = true; else if (c === '"') emTexto = false; continue; }
+        if (c === '"') emTexto = true;
+        else if (c === '{') nivel++;
+        else if (c === '}' && --nivel === 0) return JSON.parse(s.slice(0, i + 1));
+    }
+    return JSON.parse(s);
+}
+
 // ---------- Token do Google (conta de serviço, JWT assinado aqui mesmo) ----------
 let tokenCache = { valor: null, expira: 0 };
 async function tokenGoogle() {
     if (tokenCache.valor && Date.now() < tokenCache.expira - 60000) return tokenCache.valor;
     if (!process.env.GOOGLE_SA_JSON) throw new Error('GOOGLE_SA_JSON não configurado');
-    const sa = JSON.parse(process.env.GOOGLE_SA_JSON);
+    const sa = lerJsonConta(process.env.GOOGLE_SA_JSON);
     const agora = Math.floor(Date.now() / 1000);
     const b64 = o => Buffer.from(JSON.stringify(o)).toString('base64url');
     const semAssinatura = b64({ alg: 'RS256', typ: 'JWT' }) + '.' + b64({
