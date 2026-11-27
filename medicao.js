@@ -11,8 +11,8 @@
 (function () {
     'use strict';
     var IDS = {
-        ga4: '',        // ex.: 'G-XXXXXXXXXX'  (analytics.google.com > Administrador > Fluxos de dados)
-        clarity: '',    // ex.: 'abcd1234ef'    (clarity.microsoft.com > Configurações > Projeto)
+        ga4: 'G-2E7LGD1W37', // ex.: 'G-XXXXXXXXXX'  (analytics.google.com > Administrador > Fluxos de dados)
+        clarity: 'zkad2a6oud', // ex.: 'abcd1234ef'    (clarity.microsoft.com > Configurações > Projeto)
         metaPixel: ''   // ex.: '123456789012345' (business.facebook.com > Gerenciador de eventos)
     };
     var CHAVE = 'hatCookies'; // 'sim' | 'nao'
