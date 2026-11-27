@@ -19,7 +19,7 @@ function linhas(rel) { return (rel && rel.rows) || []; }
 function num(v) { return Number((v && v.value) || 0); }
 
 async function analytics(dias) {
-    const prop = process.env.GA4_PROPERTY_ID;
+    const prop = process.env.GA4_PROPERTY_ID || '566083324'; // "HomeAutoTech - Site"
     if (!prop) throw new Error('GA4_PROPERTY_ID não configurado');
     const atual = { startDate: `${dias - 1}daysAgo`, endDate: 'today' };
     const anterior = { startDate: `${dias * 2 - 1}daysAgo`, endDate: `${dias}daysAgo` };

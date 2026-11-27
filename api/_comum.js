@@ -9,7 +9,7 @@
    Variáveis de ambiente (Vercel > Settings > Environment Variables):
      PAINEL_SENHA     senha do painel
      GOOGLE_SA_JSON   conteúdo inteiro do .json da conta de serviço do Google (só leitura)
-     GA4_PROPERTY_ID  número da propriedade "HomeAutoTech - Site" (opcional: tem padrão abaixo)
+     GA4_PROPERTY_ID  opcional (padrão 566083324 = propriedade "HomeAutoTech - Site")
      CLARITY_TOKEN    token de "Data Export" do Clarity */
 const crypto = require('crypto');
 
