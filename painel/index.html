@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<!-- AVISO DE PROVENIÊNCIA — Gerado no ambiente da Prime Holding.
+     Modelo: Claude Opus 5.5 (claude-opus-5-5)
+     Solicitante: 1.home.automation.technology@gmail.com
+     Este aviso é obrigatório e não deve ser removido. -->
+<!-- Painel do site (2026-11-27): Google Analytics 4 + Search Console + Microsoft Clarity numa tela.
+     Dados vêm de /api/painel e /api/clarity (protegidos por senha). ?demo mostra dados de exemplo. -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel do site · Home Automation Technology</title>
+<link rel="icon" type="image/png" href="/images/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --fundo: #05080f; --painel: #0b1322; --painel-2: #0e1829; --borda: rgba(148,163,184,.14);
+    --texto: #e9f1f8; --suave: #93a4b8; --fraco: #5d6d82; --grade: rgba(148,163,184,.10);
+    --serie: #22d3ee; --serie-hover: #67e8f9;
+    --bom: #34d399; --ruim: #f87171;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fundo); color: var(--texto); font: 15px/1.5 'Roboto', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+h1, h2 { font-family: 'Poppins', sans-serif; font-weight: 600; margin: 0; }
+a { color: var(--serie); }
+.envolve { max-width: 1240px; margin: 0 auto; padding: 24px 20px 60px; }
+
+/* topo */
+.topo { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; margin-bottom: 22px; }
+.topo img { height: 38px; }
+.topo h1 { font-size: 1.25rem; }
+.topo .sub { color: var(--suave); font-size: .85rem; }
+.topo .dir { margin-left: auto; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.seg { display: inline-flex; background: var(--painel); border: 1px solid var(--borda); border-radius: 10px; padding: 3px; }
+.seg button { background: none; border: 0; color: var(--suave); font: 500 .88rem 'Roboto'; padding: 7px 14px; border-radius: 7px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--painel-2); color: var(--texto); box-shadow: inset 0 0 0 1px var(--borda); }
+.btn-sec { background: var(--painel); border: 1px solid var(--borda); color: var(--suave); font: 500 .85rem 'Roboto'; padding: 8px 12px; border-radius: 9px; cursor: pointer; }
+.btn-sec:hover { color: var(--texto); }
+.selo-demo { background: #f59e0b; color: #1a1205; font-weight: 700; font-size: .75rem; letter-spacing: .04em; padding: 4px 9px; border-radius: 6px; }
+
+/* grade de cartões */
+.grade { display: grid; gap: 16px; grid-template-columns: repeat(12, 1fr); }
+.c { background: var(--painel); border: 1px solid var(--borda); border-radius: 16px; padding: 18px 20px; min-width: 0; }
+.c h2 { font-size: .98rem; margin-bottom: 2px; }
+.c .nota { color: var(--suave); font-size: .82rem; margin: 0 0 14px; }
+.s3 { grid-column: span 3; } .s4 { grid-column: span 4; } .s6 { grid-column: span 6; } .s8 { grid-column: span 8; } .s12 { grid-column: span 12; }
+@media (max-width: 980px) { .s3 { grid-column: span 6; } .s4, .s6, .s8 { grid-column: span 12; } }
+@media (max-width: 560px) { .s3 { grid-column: span 12; } }
+.titulo-bloco { grid-column: span 12; display: flex; align-items: baseline; gap: 12px; margin: 14px 0 -4px; }
+.titulo-bloco h2 { font-size: 1.05rem; }
+.titulo-bloco a { font-size: .85rem; text-decoration: none; }
+
+/* número de destaque */
+.kpi .rot { color: var(--suave); font-size: .85rem; }
+.kpi .val { font: 700 2rem/1.15 'Poppins', sans-serif; margin: 6px 0 4px; font-variant-numeric: tabular-nums; }
+.kpi .var { font-size: .82rem; color: var(--suave); }
+.kpi .var b { font-weight: 600; }
+.kpi .var .sobe { color: var(--bom); } .kpi .var .desce { color: var(--ruim); }
+
+/* gráficos */
+.graf { position: relative; }
+.graf svg { display: block; width: 100%; overflow: visible; }
+.graf text { fill: var(--suave); font: 11px 'Roboto'; font-variant-numeric: tabular-nums; }
+.dica { position: absolute; pointer-events: none; background: #111c30; border: 1px solid var(--borda); border-radius: 8px; padding: 7px 10px; font-size: .82rem; white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,.4); opacity: 0; transition: opacity .1s; z-index: 5; }
+.dica b { display: block; font-size: .95rem; }
+.barras { display: grid; gap: 8px; }
+.barra { display: grid; grid-template-columns: minmax(110px, 38%) 1fr auto; align-items: center; gap: 10px; font-size: .86rem; padding: 2px 0; }
+.barra .nome { color: var(--texto); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.barra .trilho { height: 12px; }
+.barra .preench { height: 12px; background: var(--serie); border-radius: 0 4px 4px 0; min-width: 2px; transition: background .1s; }
+.barra:hover .preench { background: var(--serie-hover); }
+.barra .num { color: var(--suave); font-variant-numeric: tabular-nums; min-width: 2.5em; text-align: right; }
+
+/* tabelas */
+table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+th { text-align: left; color: var(--suave); font-weight: 500; padding: 6px 8px; border-bottom: 1px solid var(--borda); }
+td { padding: 7px 8px; border-bottom: 1px solid var(--grade); font-variant-numeric: tabular-nums; }
+th.n, td.n { text-align: right; }
+td.txt { max-width: 0; width: 55%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+tr:hover td { background: rgba(255,255,255,.02); }
+
+.vazio { color: var(--suave); font-size: .88rem; padding: 18px 0; }
+.aviso { color: #fbbf24; font-size: .85rem; }
+.aviso code { color: var(--texto); }
+
+/* login */
+.login { max-width: 380px; margin: 14vh auto 0; text-align: center; }
+.login img { height: 46px; margin-bottom: 18px; }
+.login input { width: 100%; background: var(--painel); border: 1px solid var(--borda); color: var(--texto); font: 1rem 'Roboto'; padding: 12px 14px; border-radius: 10px; margin: 16px 0 10px; }
+.login button { width: 100%; background: linear-gradient(90deg, #2f7bff, #22d3ee); color: #031018; border: 0; font: 600 1rem 'Roboto'; padding: 12px; border-radius: 10px; cursor: pointer; }
+.login .erro { color: var(--ruim); font-size: .88rem; min-height: 1.3em; }
+.carregando { color: var(--suave); padding: 40px 0; text-align: center; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="login" id="telaLogin" hidden>
+    <img src="/images/logo-nav.webp" alt="Home Automation Technology">
+    <h1 style="font-size:1.2rem">Painel do site</h1>
+    <form id="formLogin">
+        <input type="password" id="senha" placeholder="Senha do painel" autocomplete="current-password" required>
+        <button type="submit">Entrar</button>
+        <p class="erro" id="erroLogin"></p>
+    </form>
+</div>
+
+<div class="envolve" id="telaPainel" hidden>
+    <header class="topo">
+        <img src="/images/logo-nav.webp" alt="Home Automation Technology">
+        <div>
+            <h1>Painel do site</h1>
+            <div class="sub" id="atualizado">Carregando…</div>
+        </div>
+        <div class="dir">
+            <span class="selo-demo" id="seloDemo" hidden>DADOS DE EXEMPLO</span>
+            <div class="seg" role="group" aria-label="Período">
+                <button type="button" data-dias="7">7 dias</button>
+                <button type="button" data-dias="28" aria-pressed="true">28 dias</button>
+                <button type="button" data-dias="90">90 dias</button>
+            </div>
+            <button type="button" class="btn-sec" id="sair">Sair</button>
+        </div>
+    </header>
+
+    <main class="grade" id="conteudo"><div class="carregando s12">Carregando dados…</div></main>
+</div>
+
+<script>
+(function () {
+    'use strict';
+    var DEMO = /[?&]demo\b/.test(location.search);
+    var CHAVE = 'hatPainelT';
+    var dias = 28, token = null;
+    try { token = localStorage.getItem(CHAVE); } catch (e) {}
+
+    var $ = function (id) { return document.getElementById(id); };
+    var fmt = new Intl.NumberFormat('pt-BR');
+    var fmt1 = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+    var CANAIS = { 'Organic Search': 'Google (busca)', 'Direct': 'Acesso direto', 'Organic Social': 'Redes sociais', 'Referral': 'Outros sites',
+        'Paid Search': 'Anúncio no Google', 'Paid Social': 'Anúncio em redes', 'Email': 'E-mail', 'Unassigned': 'Não identificado',
+        'Organic Video': 'Vídeo', 'Display': 'Display', 'Cross-network': 'Várias redes', 'Organic Shopping': 'Shopping' };
+    var BOTOES = { whatsapp_hero: 'Topo (botão principal)', whatsapp_flutuante: 'Botão verde flutuante', whatsapp_simulador: 'Simulador de orçamento',
+        whatsapp_contato: 'Seção de contato', whatsapp_meio: 'Mandar foto (meio da página)', whatsapp_visita: 'Agendar visita técnica',
+        whatsapp_diferencial: 'Diferenciais (HA/Sentinel)', formulario: 'Formulário "Quero ser chamado"', '(not set)': 'Sem botão identificado' };
+    function nomeBotao(k) {
+        if (BOTOES[k]) return BOTOES[k];
+        var m = /^whatsapp_(?:flutuante_)?cidade_([a-z_]+?)(_fim)?$/.exec(k) || /^whatsapp_flutuante_([a-z_]+)$/.exec(k);
+        if (m) return 'Página ' + m[1].replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }) + (m[2] ? ' (fim)' : '');
+        return k;
+    }
+    function caminhoBonito(p) {
+        try { p = new URL(p, location.origin).pathname; } catch (e) {}
+        if (p === '/' ) return 'Página inicial';
+        if (/^\/obrigado(\.html)?$/.test(p)) return 'Obrigado (formulário enviado)';
+        if (/^\/privacidade(\.html)?$/.test(p)) return 'Política de privacidade';
+        var m = /^\/automacao-residencial-([a-z-]+)\/?$/.exec(p);
+        if (m) return 'Cidade: ' + m[1].replace(/-/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+        return p;
+    }
+
+    // ---------- login ----------
+    async function sha256(txt) {
+        var b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
+        return Array.from(new Uint8Array(b)).map(function (x) { return x.toString(16).padStart(2, '0'); }).join('');
+    }
+    function mostrarLogin(msg) { $('telaPainel').hidden = true; $('telaLogin').hidden = false; $('erroLogin').textContent = msg || ''; $('senha').focus(); }
+    $('formLogin').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        token = await sha256($('senha').value);
+        try { localStorage.setItem(CHAVE, token); } catch (err) {}
+        iniciar();
+    });
+    $('sair').addEventListener('click', function () { try { localStorage.removeItem(CHAVE); } catch (e) {} token = null; mostrarLogin(); });
+
+    document.querySelectorAll('.seg button').forEach(function (b) {
+        b.addEventListener('click', function () {
+            dias = Number(b.getAttribute('data-dias'));
+            document.querySelectorAll('.seg button').forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+            carregar();
+        });
+    });
+
+    function iniciar() {
+        if (!DEMO && !token) return mostrarLogin();
+        $('telaLogin').hidden = true; $('telaPainel').hidden = false; $('seloDemo').hidden = !DEMO;
+        carregar();
+    }
+
+    async function buscar(url) {
+        var r = await fetch(url, { cache: 'no-store' });
+        if (r.status === 401) throw new Error('senha');
+        return r.json();
+    }
+
+    async function carregar() {
+        $('conteudo').innerHTML = '<div class="carregando s12">Carregando dados…</div>';
+        var p, c;
+        try {
+            if (DEMO) { p = demoPainel(dias); c = demoClarity(); }
+            else {
+                var res = await Promise.all([
+                    buscar('/api/painel?dias=' + dias + '&t=' + token),
+                    buscar('/api/clarity?t=' + token).catch(function (e) { return { ok: false, erro: String(e.message) }; })
+                ]);
+                p = res[0]; c = res[1];
+            }
+        } catch (e) {
+            if (e.message === 'senha') { try { localStorage.removeItem(CHAVE); } catch (x) {} return mostrarLogin('Senha incorreta.'); }
+            $('conteudo').innerHTML = '<div class="c s12 aviso">Não foi possível carregar: ' + esc(e.message) + '</div>';
+            return;
+        }
+        $('atualizado').textContent = 'Últimos ' + dias + ' dias · atualizado ' + new Date(p.geradoEm).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) + ' · os dados ficam guardados por até 1 h';
+        desenhar(p, c);
+    }
+
+    // ---------- blocos ----------
+    function variacao(atual, anterior) {
+        if (!anterior) return '<span>sem período anterior para comparar</span>';
+        var pct = (atual - anterior) / anterior * 100, cls = pct >= 0 ? 'sobe' : 'desce';
+        return '<b class="' + cls + '">' + (pct >= 0 ? '▲ ' : '▼ ') + fmt1.format(Math.abs(pct)) + '%</b> vs. ' + dias + ' dias anteriores';
+    }
+    function kpi(rot, val, rodape, tam) {
+        return '<div class="c kpi ' + (tam || 's3') + '"><div class="rot">' + rot + '</div><div class="val">' + val + '</div><div class="var">' + rodape + '</div></div>';
+    }
+    function erroSecao(nome, erro) {
+        return '<div class="c s12 aviso">' + nome + ': ' + esc(erro) + '</div>';
+    }
+    function listaBarras(itens, rotulo) {
+        if (!itens || !itens.length) return '<div class="vazio">Ainda sem dados neste período.</div>';
+        var max = Math.max.apply(null, itens.map(function (i) { return i.valor; })) || 1;
+        return '<div class="barras">' + itens.map(function (i) {
+            var nome = rotulo ? rotulo(i.nome) : i.nome;
+            return '<div class="barra" title="' + esc(nome) + ': ' + fmt.format(i.valor) + '"><span class="nome">' + esc(nome) + '</span>' +
+                '<span class="trilho"><span class="preench" style="display:block;width:' + (i.valor / max * 100).toFixed(1) + '%"></span></span>' +
+                '<span class="num">' + fmt.format(i.valor) + '</span></div>';
+        }).join('') + '</div>';
+    }
+    function tabelaSC(linhas, rotulo) {
+        if (!linhas || !linhas.length) return '<div class="vazio">O Google ainda não mostrou o site para buscas neste período. Os primeiros dados aparecem 2 a 3 dias após a verificação.</div>';
+        return '<table><thead><tr><th>' + rotulo + '</th><th class="n">Cliques</th><th class="n">Vezes que apareceu</th><th class="n">Posição média</th></tr></thead><tbody>' +
+            linhas.map(function (l) {
+                var nome = rotulo === 'Página' ? caminhoBonito(l.nome) : l.nome;
+                return '<tr><td class="txt" title="' + esc(l.nome) + '">' + esc(nome) + '</td><td class="n">' + fmt.format(l.cliques) + '</td><td class="n">' + fmt.format(l.impressoes) + '</td><td class="n">' + fmt1.format(l.posicao) + '</td></tr>';
+            }).join('') + '</tbody></table>';
+    }
+
+    // gráfico de linha (uma série) com cruz + dica ao passar o mouse
+    function grafLinha(cont, serie) {
+        cont.__serie = serie;
+        if (!serie.length) { cont.innerHTML = '<div class="vazio">Ainda sem visitas neste período.</div>'; return; }
+        var L = cont.clientWidth || 700, A = 220, m = { t: 10, r: 10, b: 24, l: 34 };
+        var w = L - m.l - m.r, h = A - m.t - m.b;
+        var max = Math.max.apply(null, serie.map(function (s) { return s.usuarios; }));
+        var passo = max <= 5 ? 1 : Math.ceil(max / 4 / Math.pow(10, Math.floor(Math.log10(max / 4)))) * Math.pow(10, Math.floor(Math.log10(max / 4)));
+        var topo = Math.max(passo, Math.ceil(max / passo) * passo);
+        var x = function (i) { return m.l + (serie.length === 1 ? w / 2 : i / (serie.length - 1) * w); };
+        var y = function (v) { return m.t + h - v / topo * h; };
+        var dataTxt = function (d) { return d.slice(6, 8) + '/' + d.slice(4, 6); };
+        var g = '';
+        for (var v = 0; v <= topo; v += passo) g += '<line x1="' + m.l + '" x2="' + (m.l + w) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--grade)"/><text x="' + (m.l - 8) + '" y="' + (y(v) + 4) + '" text-anchor="end">' + fmt.format(v) + '</text>';
+        var marcas = Math.min(6, serie.length), rot = '';
+        for (var k = 0; k < marcas; k++) { var i = Math.round(k * (serie.length - 1) / Math.max(1, marcas - 1)); rot += '<text x="' + x(i) + '" y="' + (A - 6) + '" text-anchor="middle">' + dataTxt(serie[i].data) + '</text>'; }
+        var d = serie.map(function (s, i) { return (i ? 'L' : 'M') + x(i).toFixed(1) + ',' + y(s.usuarios).toFixed(1); }).join('');
+        var area = d + 'L' + x(serie.length - 1) + ',' + y(0) + 'L' + x(0) + ',' + y(0) + 'Z';
+        cont.innerHTML = '<svg viewBox="0 0 ' + L + ' ' + A + '" height="' + A + '" role="img" aria-label="Visitantes por dia">' + g + rot +
+            '<path d="' + area + '" fill="var(--serie)" opacity=".08"/>' +
+            '<path d="' + d + '" fill="none" stroke="var(--serie)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>' +
+            '<line id="cruz" y1="' + m.t + '" y2="' + (m.t + h) + '" stroke="var(--suave)" stroke-dasharray="3 3" opacity="0"/>' +
+            '<circle id="ponto" r="4.5" fill="var(--serie)" stroke="var(--painel)" stroke-width="2" opacity="0"/>' +
+            '<rect x="' + m.l + '" y="' + m.t + '" width="' + w + '" height="' + h + '" fill="transparent" id="alvo"/></svg><div class="dica" id="dicaLinha"></div>';
+        var svg = cont.querySelector('svg'), dica = cont.querySelector('#dicaLinha'), cruz = svg.querySelector('#cruz'), ponto = svg.querySelector('#ponto');
+        function mover(ev) {
+            var r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * (L / r.width);
+            var i = serie.length === 1 ? 0 : Math.max(0, Math.min(serie.length - 1, Math.round((px - m.l) / w * (serie.length - 1))));
+            var s = serie[i], cx = x(i), cy = y(s.usuarios);
+            cruz.setAttribute('x1', cx); cruz.setAttribute('x2', cx); cruz.setAttribute('opacity', '.6');
+            ponto.setAttribute('cx', cx); ponto.setAttribute('cy', cy); ponto.setAttribute('opacity', '1');
+            var dt = s.data.slice(6, 8) + '/' + s.data.slice(4, 6) + '/' + s.data.slice(0, 4);
+            dica.innerHTML = dt + '<b>' + fmt.format(s.usuarios) + ' visitante' + (s.usuarios === 1 ? '' : 's') + '</b>';
+            var esq = cx * r.width / L;
+            dica.style.left = Math.min(esq + 12, r.width - dica.offsetWidth - 4) + 'px';
+            dica.style.top = Math.max(0, cy * r.height / A - 50) + 'px'; dica.style.opacity = '1';
+        }
+        svg.querySelector('#alvo').addEventListener('pointermove', mover);
+        svg.querySelector('#alvo').addEventListener('pointerleave', function () { dica.style.opacity = '0'; cruz.setAttribute('opacity', '0'); ponto.setAttribute('opacity', '0'); });
+    }
+
+    function desenhar(p, c) {
+        var h = '', a = p.analytics, s = p.searchConsole;
+
+        // ----- resumo -----
+        h += '<div class="titulo-bloco"><h2>Resumo</h2></div>';
+        if (a.ok) {
+            var t = a.dados.totais, e = a.dados.eventos;
+            h += kpi('Visitantes', fmt.format(t.atual.usuarios), variacao(t.atual.usuarios, t.anterior.usuarios));
+            h += kpi('Cliques no WhatsApp', fmt.format(e.atual.contato), variacao(e.atual.contato, e.anterior.contato));
+            h += kpi('Formulários enviados', fmt.format(e.atual.generate_lead), variacao(e.atual.generate_lead, e.anterior.generate_lead));
+        } else h += erroSecao('Google Analytics', a.erro);
+        if (s.ok) {
+            h += kpi('Cliques vindos do Google', fmt.format(s.dados.totais.cliques),
+                fmt.format(s.dados.totais.impressoes) + ' vezes na busca · posição média ' + (s.dados.totais.posicao ? fmt1.format(s.dados.totais.posicao) : '–'));
+        } else h += erroSecao('Search Console', s.erro);
+
+        // ----- analytics -----
+        if (a.ok) {
+            h += '<div class="titulo-bloco"><h2>Visitas</h2><a href="https://analytics.google.com/" target="_blank" rel="noopener">abrir Google Analytics ↗</a></div>';
+            h += '<div class="c s8"><h2>Visitantes por dia</h2><p class="nota">Só conta quem aceitou os cookies.</p><div class="graf" id="grafLinha"></div></div>';
+            h += '<div class="c s4"><h2>De onde vieram</h2><p class="nota">Sessões por origem</p>' + listaBarras(a.dados.canais, function (n) { return CANAIS[n] || n; }) + '</div>';
+            h += '<div class="c s6"><h2>Cliques no WhatsApp por botão</h2><p class="nota">Qual botão do site gera mais contato</p>' +
+                (a.dados.botoes ? listaBarras(a.dados.botoes, nomeBotao)
+                    : '<div class="aviso">Falta registrar a dimensão <code>origem</code> no GA4 (Administrador → Definições personalizadas). Detalhe: ' + esc(a.dados.botoesErro) + '</div>') + '</div>';
+            h += '<div class="c s6"><h2>Páginas mais vistas</h2><p class="nota">Visualizações</p>' + listaBarras(a.dados.paginas, caminhoBonito) + '</div>';
+        }
+
+        // ----- search console -----
+        if (s.ok) {
+            var per = s.dados.periodo;
+            h += '<div class="titulo-bloco"><h2>Google (busca)</h2><a href="https://search.google.com/search-console?resource_id=https%3A%2F%2Fwww.homeautotech.com.br%2F" target="_blank" rel="noopener">abrir Search Console ↗</a></div>';
+            h += '<div class="c s6"><h2>O que pesquisaram</h2><p class="nota">' + per.startDate.split('-').reverse().join('/') + ' a ' + per.endDate.split('-').reverse().join('/') + ' (o Google atrasa ~2 dias)</p>' + tabelaSC(s.dados.buscas, 'Busca') + '</div>';
+            h += '<div class="c s6"><h2>Páginas na busca</h2><p class="nota">Inclui as páginas por cidade</p>' + tabelaSC(s.dados.paginas, 'Página') + '</div>';
+        }
+
+        // ----- clarity -----
+        h += '<div class="titulo-bloco"><h2>Comportamento (últimos 3 dias)</h2><a href="https://clarity.microsoft.com/projects/view/zkad2a6oud/dashboard" target="_blank" rel="noopener">abrir Clarity e ver gravações ↗</a></div>';
+        if (c && c.ok) {
+            var pct = function (v) { return v == null ? '–' : fmt1.format(v) + '%'; };
+            var tempo = c.tempoAtivoSeg == null ? '–' : (c.tempoAtivoSeg >= 60 ? Math.floor(c.tempoAtivoSeg / 60) + ' min ' + (c.tempoAtivoSeg % 60) + ' s' : c.tempoAtivoSeg + ' s');
+            h += kpi('Sessões gravadas', c.sessoes == null ? '–' : fmt.format(c.sessoes), 'pelo Clarity');
+            h += kpi('Rolagem média', pct(c.rolagemMedia), 'até onde descem na página');
+            h += kpi('Tempo ativo médio', tempo, 'interagindo com a página');
+            h += kpi('Cliques de raiva', pct(c.raivaPct), 'sessões com vários cliques seguidos no mesmo lugar · cliques sem efeito: ' + pct(c.mortoPct));
+        } else {
+            h += erroSecao('Clarity', (c && c.erro) || 'sem resposta');
+        }
+
+        $('conteudo').innerHTML = h;
+        if (a.ok) grafLinha($('grafLinha'), a.dados.serie);
+    }
+
+    // ---------- dados de exemplo (?demo) ----------
+    function rnd(seed) { return function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }; }
+    function demoPainel(d) {
+        var r = rnd(d), serie = [], hoje = new Date();
+        for (var i = d - 1; i >= 0; i--) {
+            var dt = new Date(hoje); dt.setDate(dt.getDate() - i);
+            var base = 18 + (d - i) * 0.25 + (dt.getDay() === 0 || dt.getDay() === 6 ? -6 : 3);
+            serie.push({ data: dt.toISOString().slice(0, 10).replace(/-/g, ''), usuarios: Math.max(2, Math.round(base + r() * 12)) });
+        }
+        var soma = serie.reduce(function (a, s) { return a + s.usuarios; }, 0);
+        var k = d / 28;
+        return { dias: d, geradoEm: new Date().toISOString(),
+            analytics: { ok: true, dados: {
+                totais: { atual: { usuarios: soma, sessoes: Math.round(soma * 1.3) }, anterior: { usuarios: Math.round(soma * 0.82), sessoes: Math.round(soma * 1.05) } },
+                eventos: { atual: { contato: Math.round(41 * k), generate_lead: Math.round(6 * k) }, anterior: { contato: Math.round(33 * k), generate_lead: Math.round(7 * k) } },
+                serie: serie,
+                canais: [{ nome: 'Organic Search', valor: Math.round(310 * k) }, { nome: 'Direct', valor: Math.round(180 * k) }, { nome: 'Organic Social', valor: Math.round(140 * k) }, { nome: 'Referral', valor: Math.round(22 * k) }, { nome: 'Unassigned', valor: Math.round(9 * k) }],
+                paginas: [{ nome: '/', valor: Math.round(620 * k) }, { nome: '/automacao-residencial-lagoa-santa/', valor: Math.round(140 * k) }, { nome: '/automacao-residencial-pedro-leopoldo/', valor: Math.round(55 * k) }, { nome: '/obrigado.html', valor: Math.round(12 * k) }, { nome: '/automacao-residencial-vespasiano/', valor: Math.round(31 * k) }].sort(function (a, b) { return b.valor - a.valor; }),
+                botoes: [{ nome: 'whatsapp_flutuante', valor: Math.round(15 * k) }, { nome: 'whatsapp_simulador', valor: Math.round(10 * k) }, { nome: 'whatsapp_hero', valor: Math.round(8 * k) }, { nome: 'whatsapp_cidade_lagoa_santa', valor: Math.round(5 * k) }, { nome: 'whatsapp_contato', valor: Math.round(3 * k) }],
+                botoesErro: null } },
+            searchConsole: { ok: true, dados: {
+                periodo: { startDate: new Date(Date.now() - (d + 1) * 864e5).toISOString().slice(0, 10), endDate: new Date(Date.now() - 2 * 864e5).toISOString().slice(0, 10) },
+                totais: { cliques: Math.round(96 * k), impressoes: Math.round(2140 * k), ctr: 0.045, posicao: 11.4 },
+                buscas: [{ nome: 'home automation technology', cliques: Math.round(38 * k), impressoes: Math.round(90 * k), posicao: 1.2 }, { nome: 'automação residencial lagoa santa', cliques: Math.round(21 * k), impressoes: Math.round(410 * k), posicao: 4.8 }, { nome: 'automação residencial', cliques: Math.round(7 * k), impressoes: Math.round(820 * k), posicao: 18.3 }, { nome: 'casa inteligente lagoa santa', cliques: Math.round(5 * k), impressoes: Math.round(130 * k), posicao: 6.1 }, { nome: 'automação pedro leopoldo', cliques: Math.round(3 * k), impressoes: Math.round(60 * k), posicao: 7.9 }],
+                paginas: [{ nome: 'https://www.homeautotech.com.br/', cliques: Math.round(62 * k), impressoes: Math.round(1300 * k), posicao: 9.2 }, { nome: 'https://www.homeautotech.com.br/automacao-residencial-lagoa-santa/', cliques: Math.round(24 * k), impressoes: Math.round(520 * k), posicao: 5.3 }, { nome: 'https://www.homeautotech.com.br/automacao-residencial-pedro-leopoldo/', cliques: Math.round(6 * k), impressoes: Math.round(170 * k), posicao: 8.4 }] } }
+        };
+    }
+    function demoClarity() { return { ok: true, sessoes: 64, rolagemMedia: 58.2, tempoAtivoSeg: 74, raivaPct: 1.6, mortoPct: 7.8 }; }
+
+    window.addEventListener('resize', function () { var g = $('grafLinha'); if (g && g.__serie) grafLinha(g, g.__serie); });
+    iniciar();
+})();
+</script>
+</body>
+</html>
